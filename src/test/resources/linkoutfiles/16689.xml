@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!DOCTYPE eLinkResult PUBLIC "-//NLM//DTD eLinkResult, 23 November 2010//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/eLink_101123.dtd">
+<eLinkResult>
+
+<LinkSet><DbFrom>bioproject</DbFrom><IdUrlList><IdUrlSet>
+	<Id>16689</Id>
+	<ObjUrl>
+		
+		<Url>http://www.straininfo.net/strains/355521</Url>
+		<LinkName>ATCC 53993 (strain passport)</LinkName>
+		<SubjectType>culture/stock collections</SubjectType>
+		<Category>Research Materials</Category>
+		<Attribute>subscription/membership/fee required</Attribute>
+		<Provider>
+			<Name>StrainInfo</Name>
+			<NameAbbr>StrainInfo</NameAbbr>
+			<Id>6685</Id>
+			<Url LNG="EN">http://www.straininfo.net</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://www.arb-silva.de/search/show/ssu/insdc/16689</Url>
+		<LinkName>SILVA SSU Database</LinkName>
+		<SubjectType>locus-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>SILVA</Name>
+			<NameAbbr>silva</NameAbbr>
+			<Id>6702</Id>
+			<Url LNG="EN">http://www.arb-silva.de</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://www.arb-silva.de/search/show/lsu/insdc/16689</Url>
+		<LinkName>SILVA LSU Database</LinkName>
+		<SubjectType>locus-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>SILVA</Name>
+			<NameAbbr>silva</NameAbbr>
+			<Id>6702</Id>
+			<Url LNG="EN">http://www.arb-silva.de</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://img.jgi.doe.gov/genome.php?id=642555101</Url>
+		<LinkName>642555101: Acidithiobacillus ferrooxidans ATCC 53993</LinkName>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Integrated Microbial Genomes</Name>
+			<NameAbbr>img</NameAbbr>
+			<Id>8053</Id>
+			<Url LNG="EN">http://img.jgi.doe.gov</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://genomesonline.org/cgi-bin/GOLD/bin/GOLDCards.cgi?goldstamp=Gc00855</Url>
+		<LinkName>GOLDCARD: Gc00855</LinkName>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Genomes On Line Database</Name>
+			<NameAbbr>GOLD</NameAbbr>
+			<Id>7663</Id>
+			<Url LNG="EN">http://genomesonline.org</Url>
+		</Provider>
+	</ObjUrl>
+</IdUrlSet></IdUrlList></LinkSet>
+
+</eLinkResult>

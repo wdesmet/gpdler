@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE eLinkResult PUBLIC "-//NLM//DTD eLinkResult, 23 November 2010//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/eLink_101123.dtd">
+<eLinkResult>
+
+<LinkSet><DbFrom>bioproject</DbFrom><IdUrlList><IdUrlSet>
+	<Id>28295</Id>
+	<ObjUrl>
+		
+		<Url>http://www.arb-silva.de/search/show/ssu/insdc/28295</Url>
+		<LinkName>SILVA SSU Database</LinkName>
+		<SubjectType>locus-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>SILVA</Name>
+			<NameAbbr>silva</NameAbbr>
+			<Id>6702</Id>
+			<Url LNG="EN">http://www.arb-silva.de</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://www.arb-silva.de/search/show/lsu/insdc/28295</Url>
+		<LinkName>SILVA LSU Database</LinkName>
+		<SubjectType>locus-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>SILVA</Name>
+			<NameAbbr>silva</NameAbbr>
+			<Id>6702</Id>
+			<Url LNG="EN">http://www.arb-silva.de</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://img.jgi.doe.gov/genome.php?id=642979342</Url>
+		<LinkName>642979342: Salmonella enterica enterica sv Typhi E02-1180</LinkName>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Integrated Microbial Genomes</Name>
+			<NameAbbr>img</NameAbbr>
+			<Id>8053</Id>
+			<Url LNG="EN">http://img.jgi.doe.gov</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://genomesonline.org/cgi-bin/GOLD/bin/GOLDCards.cgi?goldstamp=Gi02973</Url>
+		<LinkName>GOLDCARD: Gi02973</LinkName>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Genomes On Line Database</Name>
+			<NameAbbr>GOLD</NameAbbr>
+			<Id>7663</Id>
+			<Url LNG="EN">http://genomesonline.org</Url>
+		</Provider>
+	</ObjUrl>
+</IdUrlSet></IdUrlList></LinkSet>
+
+</eLinkResult>

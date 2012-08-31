@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE eLinkResult PUBLIC "-//NLM//DTD eLinkResult, 23 November 2010//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/DTD/eLink_101123.dtd">
+<eLinkResult>
+
+<LinkSet><DbFrom>bioproject</DbFrom><IdUrlList><IdUrlSet>
+	<Id>36</Id>
+	<ObjUrl>
+		
+		<Url>http://www.straininfo.net/strains/111778</Url>
+		<LinkName>N16961 (strain passport)</LinkName>
+		<SubjectType>culture/stock collections</SubjectType>
+		<Category>Research Materials</Category>
+		<Attribute>subscription/membership/fee required</Attribute>
+		<Provider>
+			<Name>StrainInfo</Name>
+			<NameAbbr>StrainInfo</NameAbbr>
+			<Id>6685</Id>
+			<Url LNG="EN">http://www.straininfo.net</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://www.arb-silva.de/search/show/ssu/insdc/36</Url>
+		<LinkName>SILVA SSU Database</LinkName>
+		<SubjectType>locus-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>SILVA</Name>
+			<NameAbbr>silva</NameAbbr>
+			<Id>6702</Id>
+			<Url LNG="EN">http://www.arb-silva.de</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://www.arb-silva.de/search/show/lsu/insdc/36</Url>
+		<LinkName>SILVA LSU Database</LinkName>
+		<SubjectType>locus-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>SILVA</Name>
+			<NameAbbr>silva</NameAbbr>
+			<Id>6702</Id>
+			<Url LNG="EN">http://www.arb-silva.de</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://cmr.jcvi.org/cgi-bin/CMR/shared/GenomeProperties.cgi?states=all&amp;amp;sub_org_val=gvc!</Url>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>J. Craig Venter Institute - Genome Properties</Name>
+			<NameAbbr>jcrventer</NameAbbr>
+			<Id>6982</Id>
+			<Url LNG="EN">http://www.jcvi.org</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://img.jgi.doe.gov/genome.php?id=637000333</Url>
+		<LinkName>637000333: Vibrio cholerae O1 bv El Tor, N16961</LinkName>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Integrated Microbial Genomes</Name>
+			<NameAbbr>img</NameAbbr>
+			<Id>8053</Id>
+			<Url LNG="EN">http://img.jgi.doe.gov</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://genomesonline.org/cgi-bin/GOLD/bin/GOLDCards.cgi?goldstamp=Gc00034</Url>
+		<LinkName>GOLDCARD: Gc00034</LinkName>
+		<SubjectType>organism-specific</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Genomes On Line Database</Name>
+			<NameAbbr>GOLD</NameAbbr>
+			<Id>7663</Id>
+			<Url LNG="EN">http://genomesonline.org</Url>
+		</Provider>
+	</ObjUrl>
+	<ObjUrl>
+		
+		<Url>http://gemina.igs.umaryland.edu/cgi-bin/gemina/GeneralQueryResults.cgi?pathogen=NCBITaxon:243277</Url>
+		<LinkName>Gemina - Vibrio cholerae O1 biovar El Tor str. N16961 identifier: 243277</LinkName>
+		<SubjectType>meta-databases</SubjectType>
+		<Category>Molecular Biology Databases</Category>
+		<Attribute>free resource</Attribute>
+		<Provider>
+			<Name>Gemina Database</Name>
+			<NameAbbr>GeminaDB</NameAbbr>
+			<Id>6674</Id>
+			<Url LNG="EN">http://gemina.igs.umaryland.edu</Url>
+		</Provider>
+	</ObjUrl>
+</IdUrlSet></IdUrlList></LinkSet>
+
+</eLinkResult>
