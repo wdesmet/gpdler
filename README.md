@@ -24,3 +24,8 @@ published).
 If you just want to use this download the data and do your own database
 loading you can either extend the existing functionality or take a look at the
 code in `net.straininfo2.grs.idloader.DumpTest`.
+
+License
+-------
+The code is licensed under the terms of the Apache License, Version 2.0. A
+copy should be in the LICENSE file of this repository.
