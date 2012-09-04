@@ -13,7 +13,7 @@ Once you've cloned the repository, you should be able to simply build the jar
 with:
 
     mvn package
-    java -jar idloader*-executable.jar
+    java -Dgrs.email=your@email.address -jar idloader*-executable.jar
 
 This will run the code with defaults, downloading all files from FTP and
 mappings from LinkOut (which will take a *long* time). The result is stored
@@ -24,6 +24,12 @@ published).
 If you just want to use this download the data and do your own database
 loading you can either extend the existing functionality or take a look at the
 code in `net.straininfo2.grs.idloader.DumpTest`.
+
+Known Issues
+------------
+Sometimes a connection might take a while to time out (even though both
+connection and read timeouts have been set). The code can recover but
+you might see some slowdown as a result.
 
 License
 -------

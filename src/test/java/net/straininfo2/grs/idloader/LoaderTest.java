@@ -9,6 +9,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 public class LoaderTest {
+
     @Test
     public void generalAddIntsTest() {
         // added because I did it entirely wrong, an array with contents
@@ -31,4 +32,18 @@ public class LoaderTest {
     public void testConstruction() {
         Loader l = new ClassPathXmlApplicationContext("classpath:applicationContext.xml").getBean(Loader.class);
     }
+
+    @Test(expected = RuntimeException.class)
+    public void badEmail() {
+        Loader l = new Loader();
+        l.checkEmailWasSet();
+    }
+
+    @Test
+    public void goodEmail() {
+        Loader l = new Loader();
+        l.setEmail("blah@somethingelse");
+        l.checkEmailWasSet();
+    }
+
 }

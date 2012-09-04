@@ -119,6 +119,7 @@ public class Loader {
         ApplicationContext ctx = new ClassPathXmlApplicationContext(
                 "applicationContext.xml");
         Loader loader = ctx.getBean(Loader.class);
+        loader.checkEmailWasSet();
         try {
             loader.downloadAndLoadData();
         } catch (Exception e) {
@@ -152,6 +153,25 @@ public class Loader {
         Map<Integer, List<Mapping>> grs = this.createMapping(ids, link);
         Map<Provider, TargetIdExtractor> extractors = constructExtractors(grs);
         dbLoader.updateIfChanged(grs, extractors);
+    }
+
+    void checkEmailWasSet() {
+        Properties p = new Properties();
+        try {
+            p.load(this.getClass().getClassLoader().getResourceAsStream("grsloader.default.properties"));
+            String defaultEmail = null;
+            if ((defaultEmail = p.getProperty("grs.email")) != null) {
+                if (email.equalsIgnoreCase(defaultEmail)) {
+                    logger.debug("Set email is equal to default {}", defaultEmail);
+                    throw new RuntimeException("Error: you need to set an email address (-Dgrs.email=...)");
+                }
+            }
+            else {
+                throw new RuntimeException("Error: property grs.email is not defined.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not find default properties file.", e);
+        }
     }
 
     WebResource createEutilsLinkResource(Client client) {
