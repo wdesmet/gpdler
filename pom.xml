@@ -4,7 +4,7 @@
 
 	<groupId>net.straininfo2.grs</groupId>
 	<artifactId>idloader</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.4</version>
 	<packaging>jar</packaging>
 
 	<name>idloader</name>
