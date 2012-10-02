@@ -215,6 +215,42 @@ public class Loader {
         }
     }
 
+    private static int determineFirstDifferingChar(String firstPath, String secondPath) {
+        int i = 0;
+        int start = -1;
+        /* Find the part of the URL where characters start differing */
+        while (i < firstPath.length()
+                && i < secondPath.length()
+                && firstPath.charAt(i) == secondPath
+                .charAt(i)) {
+            if (firstPath.charAt(i) == '=' || firstPath.charAt(i) == '/') {
+                start = i + 1;
+            }
+            i++;
+        }
+        /* If start != -1 it's pointing to an '=' or '/' just after this difference. 
+         * We don't allow a '/' or '=' inside the extracted part though, so we must
+         * skip those if any.
+         */
+        for (int j = start + 1; j < firstPath.length() && j < secondPath.length(); j++) {
+            char firstChar = firstPath.charAt(j);
+            char secondChar = secondPath.charAt(j);
+            if (firstChar == '&' || secondChar == '&') {
+                break;
+            }
+            if (firstChar == '/' || firstChar == '=' ||
+                    secondChar == '/' || secondChar == '=') {
+                start = j + 1;
+            }
+        }
+        if (i == firstPath.length()
+                || i == secondPath.length()) {
+            return start;
+        } else {
+            return start == -1 ? i : start;
+        }
+    }
+
     /**
      * Uses a simple heuristic to construct an instance that can extract target
      * IDs from URLs.
@@ -246,24 +282,12 @@ public class Loader {
                             String secondPath = new URL(mapping.getUrl())
                                     .getFile();
                             // only look at the non-host parts of the urls
-                            int i = 0;
-                            int start = -1;
-                            while (i < firstPath.length()
-                                    && i < secondPath.length()
-                                    && firstPath.charAt(i) == secondPath
-                                    .charAt(i)) {
-                                if (firstPath.charAt(i) == '=' || firstPath.charAt(i) == '/') {
-                                    // we're looking for the first change after an '=' or '/'
-                                    start = i + 1;
-                                }
-                                i++;
-                            }
-                            if (i == firstPath.length()
-                                    || i == secondPath.length()) {
+                            int start = determineFirstDifferingChar(firstPath, secondPath);
+                            if (start == -1) {
                                 extractors.put(mapping.getProvider(),
                                         dummy);
-                            } else {
-                                start = start == -1 ? i : start;
+                            }
+                            else {
                                 extractors.put(mapping.getProvider(),
                                         new TargetIdExtractor(start));
                             }

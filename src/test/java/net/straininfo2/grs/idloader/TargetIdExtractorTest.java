@@ -40,6 +40,37 @@ public class TargetIdExtractorTest {
     }
 
     @Test
+    public void testSilvaExtraction() {
+        String url1 = "http://www.arb-silva.de/search/show/ssu/insdc/13456";
+        String url2 = "http://www.arb-silva.de/search/show/ssu/insdc/13457";
+        String url3 = "http://www.arb-silva.de/search/show/lsu/insdc/13456";
+        Provider provider = new Provider(
+                "SILVA", "SILVA", 1, "http://www.arb-silva.de/");
+        Map<Integer, List<Mapping>> grs = constructGrs(url1, url2, provider);
+        Map<Provider, TargetIdExtractor> extractors = Loader.constructExtractors(grs);
+        assertEquals("13456", extractors.get(provider).extractTargetId(url1));
+        assertEquals("13457", extractors.get(provider).extractTargetId(url2));
+        assertEquals("13456", extractors.get(provider).extractTargetId(url3));
+        grs = constructGrs(url1, url3, provider);
+        extractors = Loader.constructExtractors(grs);
+        assertEquals("13456", extractors.get(provider).extractTargetId(url1));
+        assertEquals("13457", extractors.get(provider).extractTargetId(url2));
+        assertEquals("13456", extractors.get(provider).extractTargetId(url3));
+    }
+
+    @Test
+    public void testGoldExtraction() {
+        String url1 = "http://genomesonline.org/cgi-bin/GOLD/bin/GOLDCards.cgi?goldstamp=Gi05080";
+        String url2 = "http://genomesonline.org/cgi-bin/GOLD/bin/GOLDCards.cgi?goldstamp=Gi05232";
+        Provider provider = new Provider(
+                "GOLD", "GOLD", 1, "http://genomesonline.org/");
+        Map<Integer, List<Mapping>> grs = constructGrs(url1, url2, provider);
+        Map<Provider, TargetIdExtractor> extractors = Loader.constructExtractors(grs);
+        assertEquals("Gi05080", extractors.get(provider).extractTargetId(url1));
+        assertEquals("Gi05232", extractors.get(provider).extractTargetId(url2));
+    }
+
+    @Test
     public void testStraininfoExtraction() {
         String url1 = "http://www.straininfo.net/strains/110659";
         String url2 = "http://www.straininfo.net/strains/6328";

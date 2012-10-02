@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.HashMap;
 
 public class TargetIdExtractor {
 
@@ -12,6 +14,9 @@ public class TargetIdExtractor {
 
     static final Logger logger = LoggerFactory
             .getLogger(TargetIdExtractor.class);
+
+    private static final Map<Integer, TargetIdExtractor> registeredExtractors =
+        new HashMap<Integer, TargetIdExtractor>();
 
     public TargetIdExtractor(int start) {
         this.start = start;
@@ -39,5 +44,23 @@ public class TargetIdExtractor {
             logger.warn("Malformed url for extractTargetId: {}", url);
             return null;
         }
+    }
+
+    /**
+     * Fetches target ID extractor associated with the listed provider,
+     * or null if none was found.
+     *
+     * @return a target ID extractor that works on URLs for given provider, or null
+     */
+    public static TargetIdExtractor getExtractor(Provider provider) {
+        return registeredExtractors.get(provider.getId());
+    }
+
+    /**
+     * Registers an extractor for a particular ID.
+     */
+    public static void registerExtractor(int id, TargetIdExtractor extractor) {
+        assert(id > 0);
+        registeredExtractors.put(id, extractor);
     }
 }
