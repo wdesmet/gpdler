@@ -82,6 +82,12 @@ public abstract class MappingDbLoader {
      */
     public abstract void configureTables();
 	
+    static void addTargetIds(List<Mapping> mappings, Map<Provider, TargetIdExtractor> extractors) {
+        for (Mapping mapping : mappings) {
+            mapping.computeTargetId(extractors.get(mapping.getProvider()));
+        }
+    }
+
 	public void updateIfChanged(final Map<Integer, List<Mapping>> grsMapping, final Map<Provider, TargetIdExtractor> extractors) {
 		final Set<Provider> allProviders = new HashSet<Provider>(
 				getTemplate().query("SELECT id, name, abbr, url FROM " + namespace + ".providers", 
@@ -109,6 +115,7 @@ public abstract class MappingDbLoader {
 						logger.debug("Caught access exception inserting id value, continuing");
 					}
 					List<Mapping> newMapping = entry.getValue();
+                    addTargetIds(newMapping, extractors);
 					List<Mapping> curMapping = queryMapping(id);
 					if (Mapping.differentMapping(curMapping, newMapping)) {
 						logger.debug("Found a different mapping for id {}, clearing and inserting", id);
@@ -138,7 +145,7 @@ public abstract class MappingDbLoader {
 							getTemplate().update(insertMappingQuery(),
 									mapping.getUrl(), mapping.getSubjectType(), mapping.getLinkName(),
 									mapping.getCategory().toString(), mapping.getProvider().getId(), id,
-									extractors.get(mapping.getProvider()).extractTargetId(mapping.getUrl()));
+                                    mapping.getTargetId());
 						}
 					}
 					else {
@@ -149,7 +156,7 @@ public abstract class MappingDbLoader {
 	}
 
     List<Mapping> queryMapping(int id) {
-		return getTemplate().query("SELECT m.url AS m_url, m.subject_type, m.link_name, m.category, " +
+		return getTemplate().query("SELECT m.url AS m_url, m.subject_type, m.link_name, m.category, m.target_id, " +
 				"pr.id, pr.name, pr.abbr, pr.url AS pr_url " +
 				"FROM " + namespace + ".mappings m " +
 				"INNER JOIN " + namespace + ".providers pr " +
@@ -164,8 +171,8 @@ public abstract class MappingDbLoader {
                         Provider p = new Provider(rs.getString("name"), rs.getString("abbr"),
                                 rs.getInt("id"), rs.getString("pr_url"));
 						return new Mapping(rs.getString("m_url"), rs.getString("subject_type"), 
-								rs.getString("link_name"), Loader.dedupKey(categoryMap, c),
-								Loader.dedupKey(providerMap, p));
+								rs.getString("link_name"), rs.getString("target_id"),
+                                Loader.dedupKey(categoryMap, c), Loader.dedupKey(providerMap, p));
 					}
 				}, id);
 	}

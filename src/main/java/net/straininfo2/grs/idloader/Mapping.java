@@ -26,6 +26,8 @@ public final class Mapping implements Serializable {
 
     private final Provider provider;
 
+    private String targetId;
+
     public Mapping(String url, String subjectType, String linkName, Category category, Provider provider) {
         assert url != null;
         this.url = url;
@@ -33,6 +35,11 @@ public final class Mapping implements Serializable {
         this.linkName = linkName;
         this.category = category;
         this.provider = provider;
+    }
+
+    public Mapping(String url, String subjectType, String linkName, String targetId, Category category, Provider provider) {
+        this(url, subjectType, linkName, category, provider);
+        this.targetId = targetId;
     }
 
     public String getUrl() {
@@ -53,6 +60,14 @@ public final class Mapping implements Serializable {
 
     public Provider getProvider() {
         return provider;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void computeTargetId(TargetIdExtractor extractor) {
+        this.targetId = extractor.extractTargetId(this.getUrl());
     }
 
     /**
@@ -112,7 +127,8 @@ public final class Mapping implements Serializable {
                     (this.subjectType == null ? other.subjectType == null : this.subjectType.equals(other.subjectType)) &&
                     (this.linkName == null ? other.linkName == null : this.linkName.equals(other.linkName)) &&
                     (this.category == null ? other.category == null : this.category.equals(other.category)) &&
-                    (this.provider == null ? other.provider == null : this.provider.equals(other.provider));
+                    (this.provider == null ? other.provider == null : this.provider.equals(other.provider)) &&
+                    (this.targetId == null ? other.targetId == null : this.targetId.equals(other.targetId));
         }
         else {
             return false;
