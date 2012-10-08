@@ -1,7 +1,12 @@
--- Run this script in the database of your choice, note that
+-- Run this script to setup tables, note that
 -- it drops any old tables present.
 -- It's not been tested very well on anything other than Oracle,
--- but should be portable with minor changes.
+-- You can safely drop trigger definitions and created_at/updated_at
+-- columns for most tables. Currently the only way to make this
+-- work for other databases is to write a new database loader though
+-- and check the mappings from the grs-web project. Ideally, these
+-- tables would be generated from those mappings, instead of manually
+-- defined here.
 
 -- DROP OLD TABLES (IN ORDER)
 DROP TABLE MAPPINGS;
@@ -15,7 +20,7 @@ DROP TABLE GENOME_PROJ_ACC;
 DROP TABLE GENOME_PROJ_REFSEQ;
 DROP TABLE PROJECTS_LABS;
 DROP TABLE GENOME_PROJECTS;
-DROP SEQUENCE MAPPINGS_SEQ;
+DROP SEQUENCE MAPPING_SEQ;
 DROP SEQUENCE PROJ_LABS_SEQ;
 DROP SEQUENCE GENOME_PROJ_ACC_SEQ;
 DROP SEQUENCE GENOME_PROJ_REFSEQ_SEQ;
@@ -59,6 +64,20 @@ CREATE TABLE GENOME_EUK
     UPDATED_AT DATE,
     PRIMARY KEY (PROJ_ID)
   );
+CREATE OR REPLACE
+  TRIGGER EUK_CHANGES
+  BEFORE INSERT OR UPDATE ON GENOME_EUK
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN
+      :NEW.created_at := sysdate;
+    ELSE
+      :NEW.created_at := :OLD.created_at;
+    END IF;
+    :NEW.updated_at := sysdate;
+END;
+/
+
 CREATE TABLE GENOME_ENV
   (
     PROJ_ID           NUMERIC(10,0),
@@ -71,6 +90,20 @@ CREATE TABLE GENOME_ENV
     UPDATED_AT DATE,
     PRIMARY KEY (PROJ_ID)
   );
+CREATE OR REPLACE
+  TRIGGER ENV_CHANGES
+  BEFORE INSERT OR UPDATE ON GENOME_ENV
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN
+      :NEW.created_at := sysdate;
+    ELSE
+      :NEW.created_at := :OLD.created_at;
+    END IF;
+    :NEW.updated_at := sysdate;
+END;
+/
+
 CREATE TABLE GENOME_PROK
   (
     PROJ_ID         NUMERIC(10,0),
@@ -98,6 +131,20 @@ CREATE TABLE GENOME_PROK
     UPDATED_AT DATE,
     PRIMARY KEY (PROJ_ID)
   );
+CREATE OR REPLACE
+  TRIGGER PROK_CHANGES
+  BEFORE INSERT OR UPDATE ON GENOME_PROK
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN
+      :NEW.created_at := sysdate;
+    ELSE
+      :NEW.created_at := :OLD.created_at;
+    END IF;
+    :NEW.updated_at := sysdate;
+END;
+/
+
 CREATE TABLE GENOME_PROK_COMPLETE
   (
     PROJ_ID           NUMERIC(10,0),
@@ -109,6 +156,20 @@ CREATE TABLE GENOME_PROK_COMPLETE
     UPDATED_AT DATE,
     PRIMARY KEY (PROJ_ID)
   );
+CREATE OR REPLACE
+  TRIGGER PROK_COMPLETE_CHANGES
+  BEFORE INSERT OR UPDATE ON GENOME_PROK_COMPLETE
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN
+      :NEW.created_at := sysdate;
+    ELSE
+      :NEW.created_at := :OLD.created_at;
+    END IF;
+    :NEW.updated_at := sysdate;
+END;
+/
+
 CREATE TABLE GENOME_PROK_INPROGRESS
   (
     PROJ_ID           NUMERIC(10,0),
@@ -124,6 +185,20 @@ CREATE TABLE GENOME_PROK_INPROGRESS
     UPDATED_AT DATE,
     PRIMARY KEY (PROJ_ID)
   );
+CREATE OR REPLACE
+  TRIGGER PROK_INPROGRESS_CHANGES
+  BEFORE INSERT OR UPDATE ON GENOME_PROK_INPROGRESS
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN
+      :NEW.created_at := sysdate;
+    ELSE
+      :NEW.created_at := :OLD.created_at;
+    END IF;
+    :NEW.updated_at := sysdate;
+END;
+/
+
 CREATE TABLE GENOME_PROJ_ACC
   (
     ID               NUMERIC(10,0),
@@ -133,10 +208,6 @@ CREATE TABLE GENOME_PROJ_ACC
     UNIQUE (PROJ_ID, ACCESSION_NUMBER),
     FOREIGN KEY (PROJ_ID) REFERENCES GENOME_PROJECTS(ID)
   );
-CREATE UNIQUE INDEX ON GENOME_PROJ_ACC
-  (
-    PROJ_ID, ACCESSION_NUMBER
-  );
 CREATE TABLE GENOME_PROJ_REFSEQ
   (
     ID         NUMERIC(10,0),
@@ -145,10 +216,6 @@ CREATE TABLE GENOME_PROJ_REFSEQ
     PRIMARY KEY (ID),
     UNIQUE (PROJ_ID, REFSEQ_ACC),
     FOREIGN KEY (PROJ_ID) REFERENCES GENOME_PROJECTS(ID)
-  );
-CREATE UNIQUE INDEX ON GENOME_PROJ_REFSEQ
-  (
-    PROJ_ID, REFSEQ_ACC
   );
 CREATE TABLE PROVIDERS
   (
@@ -178,6 +245,20 @@ CREATE TABLE MAPPINGS
     FOREIGN KEY (PROVIDER_ID) REFERENCES PROVIDERS (ID),
     CONSTRAINT MAPPINGS_GENOME_PROJECTS_FK1 FOREIGN KEY (PROJECT_ID) REFERENCES GENOME_PROJECTS (ID)
   );
+CREATE OR REPLACE
+  TRIGGER MAPPING_CHANGES
+  BEFORE INSERT OR UPDATE ON MAPPINGS
+  FOR EACH ROW
+  BEGIN
+    IF INSERTING THEN
+      :NEW.created_at := sysdate;
+    ELSE
+      :NEW.created_at := :OLD.created_at;
+    END IF;
+    :NEW.updated_at := sysdate;
+END;
+/
+
 CREATE INDEX PROVIDER_TARGET_IDX ON MAPPINGS
   (
     PROVIDER_ID,
