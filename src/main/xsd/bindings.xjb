@@ -8,7 +8,7 @@
     </globalBindings>
     <bindings schemaLocation="Core.xsd" node="/xs:schema">
         <schemaBindings>
-            <package name="net.straininfo2.grs.idloader.bindings" />
+            <package name="net.straininfo2.grs.idloader.bioproject.bindings" />
         </schemaBindings>
         <bindings node="//xs:element[@name='BioSampleSet']/xs:complexType">
             <factoryMethod name="TypeBioSampleSet" />
