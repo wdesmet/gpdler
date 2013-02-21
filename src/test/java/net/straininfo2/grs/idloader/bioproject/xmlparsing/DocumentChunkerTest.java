@@ -19,10 +19,10 @@ import static junit.framework.Assert.assertEquals;
 public class DocumentChunkerTest {
 
     /**
-     * Pass a bioproject XML file to chunker, checks if chunking works.
+     * Utility function that reads the bioproject XML into binding objects.
      */
-    @Test
-    public void parseBioProjectXml() throws JAXBException, SAXException, ParserConfigurationException, IOException {
+    public static List<TypePackage> parseBioProjectFile() throws
+            JAXBException, SAXException, ParserConfigurationException, IOException {
         JAXBContext context = JAXBContext.newInstance(TypePackage.class);
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -35,7 +35,15 @@ public class DocumentChunkerTest {
             }
         });
         reader.setContentHandler(chunker);
-        reader.parse(this.getClass().getClassLoader().getResource("bioproject.xml").toExternalForm());
-        assertEquals(2, packageList.size());
+        reader.parse(DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml").toExternalForm());
+        return packageList;
+    }
+
+    /**
+     * Pass a bioproject XML file to chunker, checks if chunking works.
+     */
+    @Test
+    public void parseBioProjectXml() throws Exception {
+        assertEquals(2, parseBioProjectFile().size());
     }
 }
