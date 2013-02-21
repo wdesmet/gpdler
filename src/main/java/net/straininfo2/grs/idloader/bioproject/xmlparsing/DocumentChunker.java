@@ -104,7 +104,7 @@ public class DocumentChunker extends XMLFilterImpl {
                 handler.startDocument();
                 handler.setDocumentLocator(locator);
                 // also pass it a PackageSet
-                handler.startElement(packageSetUri, "PackageSet", packageSetQName, attributes);
+                handler.startElement(packageSetUri, "PackageSet", packageSetQName, packageSetAttributes);
 
                 // start sending events to this handler
                 this.setContentHandler(handler);
