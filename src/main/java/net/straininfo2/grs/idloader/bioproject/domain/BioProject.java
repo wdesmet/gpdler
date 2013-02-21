@@ -1,5 +1,7 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import java.util.Collection;
+
 /**
  * Root of the domain model based on bioproject XML. In the serialization
  * format, packages are organised in package sets, and a package bundles
@@ -28,6 +30,10 @@ public class BioProject {
     private String title;
 
     private String description;
+
+    private Collection<ProjectRelevance> projectRelevance;
+
+    private Collection<String> locusTagPrefixes;
 
     public long getProjectId() {
         return projectId;
@@ -76,4 +82,21 @@ public class BioProject {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Collection<ProjectRelevance> getProjectRelevance() {
+        return projectRelevance;
+    }
+
+    public void setProjectRelevance(Collection<ProjectRelevance> projectRelevance) {
+        this.projectRelevance = projectRelevance;
+    }
+
+    public Collection<String> getLocusTagPrefixes() {
+        return locusTagPrefixes;
+    }
+
+    public void setLocusTagPrefixes(Collection<String> locusTagPrefixes) {
+        this.locusTagPrefixes = locusTagPrefixes;
+    }
+
 }

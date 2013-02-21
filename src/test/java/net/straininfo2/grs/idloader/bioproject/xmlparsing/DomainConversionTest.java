@@ -4,6 +4,7 @@ import net.straininfo2.grs.idloader.bioproject.bindings.Project;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.MemoryBackedDomainHandler;
+import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
 import org.junit.Test;
 
 import java.util.List;
@@ -21,6 +22,12 @@ public class DomainConversionTest {
         List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
         // SAX parses in document order, so we know which one this is
         return typePackages.get(0).getProject().getProject();
+    }
+
+    private static Project retrieveBordetellaProject() throws Exception {
+        List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
+        // SAX parses in document order, so we know which one this is
+        return typePackages.get(1).getProject().getProject();
     }
 
     @Test
@@ -43,6 +50,23 @@ public class DomainConversionTest {
         assertTrue(project.getDescription().contains("ATCC 35210"));
         // publications, external links, locus tag prefix and release date not parsed
         // "RefSeq" tag not used here
+    }
+
+    @Test
+    public void testRelevanceConversion() throws Exception {
+        BioProject project = new BioProject();
+        DomainConverter converter = new DomainConverter();
+        converter.addRelevanceFields(project, retrieveBordetellaProject().getProjectDescr().getRelevance());
+        assertTrue(project.getProjectRelevance() != null);
+        assertEquals(1, project.getProjectRelevance().size());
+        assertEquals(ProjectRelevance.RelevantField.MEDICAL, project.getProjectRelevance().iterator().next().getRelevantField());
+    }
+
+    @Test
+    public void testLocusTags() throws Exception {
+        BioProject project = new BioProject();
+        new DomainConverter().addLocusTags(project, retrieveBorreliaProject().getProjectDescr().getLocusTagPrefixes());
+        assertEquals("BB", project.getLocusTagPrefixes().iterator().next());
     }
 
 }
