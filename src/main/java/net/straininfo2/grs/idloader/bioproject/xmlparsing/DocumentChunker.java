@@ -2,17 +2,16 @@ package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 
 import net.straininfo2.grs.idloader.bioproject.bindings.PackageSet;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-import javax.sql.rowset.spi.XmlReader;
 import javax.xml.bind.*;
-import javax.xml.parsers.SAXParserFactory;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -23,6 +22,8 @@ import java.util.List;
  * Based on the sample from JAXB distribution.
  */
 public class DocumentChunker extends XMLFilterImpl {
+
+    private static final Logger logger = LoggerFactory.getLogger(DocumentChunker.class);
 
     private JAXBContext context;
 
@@ -40,8 +41,23 @@ public class DocumentChunker extends XMLFilterImpl {
     private String packageSetQName;
     private Attributes packageSetAttributes;
 
+    private PackageProcessor processor;
+
     public DocumentChunker (JAXBContext context) {
+        this(context, new PackageProcessor() {
+
+            @Override
+            public void processPackage(TypePackage nextPackage) {
+                // default implementation does nothing
+                logger.debug("Received package with project: {}", nextPackage.getProject().getProject().getProjectDescr().getName());
+            }
+
+        });
+    }
+
+    public DocumentChunker(JAXBContext context, PackageProcessor processor) {
         this.context = context;
+        this.processor = processor;
     }
 
     @Override
@@ -131,7 +147,7 @@ public class DocumentChunker extends XMLFilterImpl {
             handler.endDocument();
             setContentHandler(new DefaultHandler());
             try {
-                handleObject(((PackageSet) handler.getResult()).getPackages());
+                processPackages(((PackageSet) handler.getResult()).getPackages());
             } catch (JAXBException e) {
                 throw new SAXException("Unmarshalling the package at end failed, at line " +
                         locator.getLineNumber(), e);
@@ -142,8 +158,10 @@ public class DocumentChunker extends XMLFilterImpl {
     }
 
     /* Temporary, should push this to another class */
-    public void handleObject(List<TypePackage> nPackage) {
-        System.out.println(nPackage.get(0).getProject().getProject().getProjectDescr().getName());
+    public void processPackages(List<TypePackage> nPackages) {
+        for (TypePackage nextPackage : nPackages) {
+            processor.processPackage(nextPackage);
+        }
     }
 
 }
