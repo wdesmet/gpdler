@@ -30,11 +30,14 @@ public class DomainConverter implements PackageProcessor {
         project.setArchive(Archive.valueOf(archiveID.getArchive().value()));
     }
 
-    private void addDescription(BioProject project, Project.ProjectDescr descr) {
-
+    public void addDescription(BioProject project, Project.ProjectDescr descr) {
+        // TODO: links, publications, refseq, relevance, userterm, locus tag prefix
+        project.setDescription(descr.getDescription());
+        project.setName(descr.getName());
+        project.setTitle(descr.getTitle());
     }
 
-    private void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {
+    public void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {
 
     }
 
