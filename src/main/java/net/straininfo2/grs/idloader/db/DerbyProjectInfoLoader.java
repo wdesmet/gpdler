@@ -2,8 +2,6 @@ package net.straininfo2.grs.idloader.db;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Date;
 

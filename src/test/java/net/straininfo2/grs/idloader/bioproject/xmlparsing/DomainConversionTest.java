@@ -3,7 +3,6 @@ package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 import net.straininfo2.grs.idloader.bioproject.bindings.Project;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
-import net.straininfo2.grs.idloader.bioproject.domain.MemoryBackedDomainHandler;
 import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
 import org.junit.Test;
 
