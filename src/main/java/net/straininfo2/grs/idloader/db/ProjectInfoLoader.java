@@ -2,6 +2,7 @@ package net.straininfo2.grs.idloader.db;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -63,7 +64,7 @@ public abstract class ProjectInfoLoader {
 
     private static final StringRowMapper STRING_ROW_MAPPER = new StringRowMapper();
 
-    private SimpleJdbcTemplate template;
+    private JdbcTemplate template;
 
     private TransactionTemplate txTemplate;
 
@@ -71,12 +72,12 @@ public abstract class ProjectInfoLoader {
 
     private String namespace;
 
-    public SimpleJdbcTemplate getTemplate() {
+    public JdbcTemplate getTemplate() {
         return template;
     }
 
     public void setDataSource(DataSource source) {
-        this.template = new SimpleJdbcTemplate(source);
+        this.template = new JdbcTemplate(source);
     }
 
     public void setTransactionManager(
