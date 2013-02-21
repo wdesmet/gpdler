@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 
+import net.straininfo2.grs.idloader.bioproject.bindings.PackageSet;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -13,6 +14,7 @@ import javax.sql.rowset.spi.XmlReader;
 import javax.xml.bind.*;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Takes a bioproject XML and helps to parse it in Package sized chunks.
@@ -32,6 +34,11 @@ public class DocumentChunker extends XMLFilterImpl {
 
     /* Actual unmarshaller, starts empty */
     private UnmarshallerHandler handler = null;
+
+    /* packageset namespace, qName and attributes, so we can pass it to the unmarshaller virtually */
+    private String packageSetUri;
+    private String packageSetQName;
+    private Attributes packageSetAttributes;
 
     public DocumentChunker (JAXBContext context) {
         this.context = context;
@@ -82,6 +89,12 @@ public class DocumentChunker extends XMLFilterImpl {
 
     @Override
     public void startElement(String uri, String name, String qName, Attributes attributes) throws SAXException {
+
+        if (name.equals("PackageSet")) {
+            this.packageSetUri = uri;
+            this.packageSetQName = qName;
+            this.packageSetAttributes = attributes;
+        }
         if (handler == null && name.equals("Package")) {
             try {
                 Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -90,6 +103,8 @@ public class DocumentChunker extends XMLFilterImpl {
                 // start a new document virtually
                 handler.startDocument();
                 handler.setDocumentLocator(locator);
+                // also pass it a PackageSet
+                handler.startElement(packageSetUri, "PackageSet", packageSetQName, attributes);
 
                 // start sending events to this handler
                 this.setContentHandler(handler);
@@ -112,12 +127,11 @@ public class DocumentChunker extends XMLFilterImpl {
             }
             // handler != null, end the document for handler, and get cracking on the result
             removeNamespacesFrom(handler);
+            handler.endElement(packageSetUri, "PackageSet", packageSetQName);
             handler.endDocument();
             setContentHandler(new DefaultHandler());
             try {
-                @SuppressWarnings("unchecked")
-                JAXBElement<TypePackage> elem = (JAXBElement<TypePackage>)handler.getResult();
-                handleObject(elem.getValue());
+                handleObject(((PackageSet) handler.getResult()).getPackages());
             } catch (JAXBException e) {
                 throw new SAXException("Unmarshalling the package at end failed, at line " +
                         locator.getLineNumber(), e);
@@ -128,19 +142,8 @@ public class DocumentChunker extends XMLFilterImpl {
     }
 
     /* Temporary, should push this to another class */
-    public void handleObject(TypePackage nPackage) {
-        System.out.println(nPackage.getProject().getProject().getProjectDescr().getName());
+    public void handleObject(List<TypePackage> nPackage) {
+        System.out.println(nPackage.get(0).getProject().getProject().getProjectDescr().getName());
     }
 
-    // Simple test
-    public static void main(String[] args) throws Exception {
-        JAXBContext context = JAXBContext.newInstance(TypePackage.class);
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XMLReader reader = factory.newSAXParser().getXMLReader();
-        DocumentChunker chunker = new DocumentChunker(context);
-        reader.setContentHandler(chunker);
-        reader.parse(DocumentChunker.class.getClassLoader().getResource("bioproject.xml").toExternalForm());
-
-    }
 }
