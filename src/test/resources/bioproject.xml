@@ -376,4 +376,60 @@
             </Submission>
         </Submission>
     </Package>
+    <Package>
+        <Project>
+            <Project>
+                <ProjectID>
+                    <ArchiveID accession="PRJNA48333" archive="NCBI" id="48333"/>
+                </ProjectID>
+                <ProjectDescr>
+                    <Name>Human Microbiome Project 16S rRNA 454 Clinical Production Phase I</Name>
+                    <Title>Human Microbiome Project (HMP) 16S rRNA Gene Diversity, the diversity of 16S ribosomal RNA genes in the human microbiome: 454 Clinical Production Phase I</Title>
+                    <Description>This HMP production phase represents pyrosequencing of 16S rRNA genes amplified from multiple body sites across hundreds of human subjects. There are two time points represented for a subset of these subjects. Using default protocol v4.2., data for the 16S window spanning V3-V5 was generated for all samples, with a second 16S window spanning V1-V3 generated for a majority of the samples. 16S rRNA sequencing is being used to characterize the complexity of microbial communities at individual body sites, and to determine whether there is a core microbiome at each site. Several body sites will be studied, including the gastrointestinal and female urogenital tracts, oral cavity, nasal and pharyngeal tract, and skin.</Description>
+                    <ExternalLink category="NCBI Resources" label="NCBI Project: HMP Roadmap">
+                        <URL>/sites/entrez?Db=genomeprj&amp;cmd=ShowDetailView&amp;TermToSearch=43021</URL>
+                    </ExternalLink>
+                    <ExternalLink category="Related Resources" label="NIH Roadmap Project">
+                        <URL>http://nihroadmap.nih.gov/hmp/</URL>
+                    </ExternalLink>
+                    <ExternalLink category="Related Resources" label="NIH HMP DACC">
+                        <URL>http://www.hmpdacc.org/</URL>
+                    </ExternalLink>
+                    <ExternalLink label="">
+                        <dbXREF db="dbGaP">
+                            <ID>phs000228</ID>
+                        </dbXREF>
+                    </ExternalLink>
+                </ProjectDescr>
+                <ProjectType>
+                    <ProjectTypeSubmission>
+                        <Target capture="eTargetedLocusLoci" material="eGenome" sample_scope="eEnvironment">
+                            <Organism species="646099" taxID="646099">
+                                <OrganismName>human metagenome</OrganismName>
+                                <Supergroup>eOther</Supergroup>
+                            </Organism>
+                        </Target>
+                        <Method method_type="eSequencing"/>
+                        <Objectives>
+                            <Data data_type="eSequence"/>
+                        </Objectives>
+                    </ProjectTypeSubmission>
+                </ProjectType>
+            </Project>
+        </Project>
+        <Submission>
+            <Submission submitted="2010-05-03">
+                <Description>
+                    <Organization role="participant" type="center">
+                        <Name abbr="n/a">n/a</Name>
+                        <!-- Contact information has been removed -->
+                    </Organization>
+                    <Organization role="owner" type="consortium" url="http://nihroadmap.nih.gov/hmp/">
+                        <Name abbr="NIH Human Microbiome Consortium">NIH Human Microbiome Consortium</Name>
+                    </Organization>
+                    <Access>public</Access>
+                </Description>
+            </Submission>
+        </Submission>
+    </Package>
 </PackageSet>

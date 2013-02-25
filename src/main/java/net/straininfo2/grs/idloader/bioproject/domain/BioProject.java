@@ -37,6 +37,12 @@ public class BioProject {
 
     private Collection<Publication> publications;
 
+    private Collection<ExternalLink> externalLinks;
+
+    private Collection<DBXref> crossReferences;
+
+    private Collection<UserTerm> userTerms;
+
     public long getProjectId() {
         return projectId;
     }
@@ -107,5 +113,29 @@ public class BioProject {
 
     public void setPublications(Collection<Publication> publications) {
         this.publications = publications;
+    }
+
+    public Collection<ExternalLink> getExternalLinks() {
+        return externalLinks;
+    }
+
+    public void setExternalLinks(Collection<ExternalLink> externalLinks) {
+        this.externalLinks = externalLinks;
+    }
+
+    public Collection<DBXref> getCrossReferences() {
+        return crossReferences;
+    }
+
+    public void setCrossReferences(Collection<DBXref> crossReferences) {
+        this.crossReferences = crossReferences;
+    }
+
+    public Collection<UserTerm> getUserTerms() {
+        return userTerms;
+    }
+
+    public void setUserTerms(Collection<UserTerm> userTerms) {
+        this.userTerms = userTerms;
     }
 }

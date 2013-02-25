@@ -5,6 +5,7 @@ import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
 import net.straininfo2.grs.idloader.bioproject.domain.Publication;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,25 +20,34 @@ import static net.straininfo2.grs.idloader.bioproject.domain.Archive.NCBI;
 public class DomainConversionTest {
 
     private static Project retrieveBorreliaProject() throws Exception {
-        List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
         // SAX parses in document order, so we know which one this is
-        return typePackages.get(0).getProject().getProject();
+        return DocumentChunkerTest.parseBioProjectFile().get(0).getProject().getProject();
     }
 
     private static Project retrieveBordetellaProject() throws Exception {
-        List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
-        return typePackages.get(1).getProject().getProject();
+        return DocumentChunkerTest.parseBioProjectFile().get(1).getProject().getProject();
     }
 
     private static Project retrieveAtribeusProject() throws Exception {
-        List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
-        return typePackages.get(2).getProject().getProject();
+        return DocumentChunkerTest.parseBioProjectFile().get(2).getProject().getProject();
+    }
+
+    private static Project retrieveHmpProject() throws Exception {
+        return DocumentChunkerTest.parseBioProjectFile().get(3).getProject().getProject();
+    }
+
+    private BioProject project;
+
+    private DomainConverter converter;
+
+    @Before
+    public void setUp() {
+        this.project = new BioProject();
+        this.converter = new DomainConverter();
     }
 
     @Test
     public void testIdentifierConversion() throws Exception {
-        DomainConverter converter = new DomainConverter();
-        BioProject project = new BioProject();
         converter.addIdentifiers(project, retrieveBorreliaProject().getProjectID());
         assertEquals("PRJNA3", project.getAccession());
         assertEquals(3, project.getProjectId());
@@ -46,8 +56,6 @@ public class DomainConversionTest {
 
     @Test
     public void testDescriptionConversion() throws Exception {
-        DomainConverter converter = new DomainConverter();
-        BioProject project = new BioProject();
         converter.addDescription(project, retrieveBorreliaProject().getProjectDescr());
         assertEquals("Borrelia burgdorferi B31", project.getName());
         assertEquals("Causes Lyme disease", project.getTitle());
@@ -58,8 +66,6 @@ public class DomainConversionTest {
 
     @Test
     public void testRelevanceConversion() throws Exception {
-        BioProject project = new BioProject();
-        DomainConverter converter = new DomainConverter();
         converter.addRelevanceFields(project, retrieveBordetellaProject().getProjectDescr().getRelevance());
         assertTrue(project.getProjectRelevance() != null);
         assertEquals(1, project.getProjectRelevance().size());
@@ -68,18 +74,24 @@ public class DomainConversionTest {
 
     @Test
     public void testLocusTags() throws Exception {
-        BioProject project = new BioProject();
-        new DomainConverter().addLocusTags(project, retrieveBorreliaProject().getProjectDescr().getLocusTagPrefixes());
+        converter.addLocusTags(project, retrieveBorreliaProject().getProjectDescr().getLocusTagPrefixes());
         assertEquals("BB", project.getLocusTagPrefixes().iterator().next());
     }
 
     @Test
     public void testPublications() throws Exception {
-        BioProject project = new BioProject();
-        new DomainConverter().addPublications(project, retrieveAtribeusProject().getProjectDescr().getPublications());
+        converter.addPublications(project, retrieveAtribeusProject().getProjectDescr().getPublications());
         Publication publication = project.getPublications().iterator().next();
         assertEquals("PLoS One.", publication.getJournalTitle());
         assertEquals("Schountz" ,publication.getAuthors().get(0).getLastName());
+    }
+
+    @Test
+    public void testExternalLinks() throws Exception {
+        converter.addLinks(project, retrieveHmpProject().getProjectDescr().getExternalLinks());
+        assertEquals(3, project.getExternalLinks().size());
+        assertEquals(1, project.getCrossReferences().size());
+        assertEquals("phs000228", project.getCrossReferences().iterator().next().getId());
     }
 
 }

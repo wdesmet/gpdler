@@ -13,11 +13,11 @@ public class DerbyMappingDbLoader extends MappingDbLoader {
     public void configureTables() {
         boolean schemaExists = getTemplate().queryForInt("SELECT COUNT(*) FROM SYS.SYSSCHEMAS WHERE SCHEMANAME=?", getNamespace().toUpperCase()) == 1;
         if (!schemaExists) {
-            getTemplate().getJdbcOperations().execute("CREATE SCHEMA " + getNamespace());
+            getTemplate().execute("CREATE SCHEMA " + getNamespace());
         }
         boolean tableExists = getTemplate().queryForInt("SELECT COUNT(*) FROM SYS.SYSTABLES WHERE TABLENAME='MAPPINGS'") == 1;
         if (!tableExists) {
-            JdbcOperations ops = getTemplate().getJdbcOperations();
+            JdbcOperations ops = getTemplate();
             ops.execute("CREATE TABLE " + getNamespace() + ".PROVIDERS(" +
                     "ID   NUMERIC(8,0)," +
                     "NAME VARCHAR(128)," +

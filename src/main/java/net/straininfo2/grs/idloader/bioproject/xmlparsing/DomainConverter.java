@@ -3,9 +3,7 @@ package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 import net.straininfo2.grs.idloader.bioproject.bindings.*;
 import net.straininfo2.grs.idloader.bioproject.domain.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance.RelevantField.*;
 
@@ -18,6 +16,15 @@ import static net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance.Re
  * @see BioProject
  */
 public class DomainConverter implements PackageProcessor {
+
+    /*
+    Note; this class is long, but the code is all very simple loading of one
+    representation into the other. The end result is a domain class layout
+    that has no dependencies at all on the XML representation. Obviously some
+    of this could be moved to static constructors on the domain objects, but
+    not much is gained from that, aside from a shorter and less procedural
+    looking class.
+     */
 
     private DomainHandler handler;
 
@@ -33,6 +40,31 @@ public class DomainConverter implements PackageProcessor {
     public DomainConverter(DomainHandler handler) {
         this.handler = handler;
     }
+
+    // Helper functions.
+
+    /**
+     * Concatenates all strings in the given list, separating them with the
+     * supplied character.
+     *
+     * @param strings List of strings to concatenate
+     * @param concatChar Character to separate concatenated strings with
+     * @return Single strings containing all members of the supplied list,
+     * separated by concatChar
+     */
+    public static String concatenateStringList(List<String> strings, char concatChar) {
+        Iterator<String> iter = strings.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (iter.hasNext()) {
+            sb.append(iter.next());
+            if (iter.hasNext()) {
+                sb.append(concatChar);
+            }
+        }
+        return sb.toString();
+    }
+
+    // object construction functions
 
     public void addIdentifiers(BioProject project, Project.ProjectID id) {
         TypeArchiveID archiveID = id.getArchiveID();
@@ -147,8 +179,40 @@ public class DomainConverter implements PackageProcessor {
         project.setPublications(pubList);
     }
 
+    /**
+     * Adds external links. There are actually two types: normal URLs and
+     * DBXref links. They appear to be the same type because of the way the
+     * XML is structured, but it's best to separate them here.
+     *
+     * @param project Project to add the external links to
+     * @param externalLinks List of external links parsed from XML
+     */
+    public void addLinks(BioProject project, List<TypeExternalLink> externalLinks) {
+        List<ExternalLink> links = new LinkedList<>();
+        List<DBXref> crossReferences = new LinkedList<>();
+        for (TypeExternalLink xmlLink : externalLinks) {
+            if (xmlLink.getDbXREF() == null) {
+                ExternalLink link = new ExternalLink();
+                link.setCategory(xmlLink.getCategory());
+                link.setLabel(xmlLink.getLabel());
+                link.setUrl(xmlLink.getURL());
+                links.add(link);
+            }
+            else {
+                DBXref ref = new DBXref();
+                ref.setCategory(xmlLink.getCategory());
+                ref.setLabel(xmlLink.getLabel());
+                ref.setDb(xmlLink.getDbXREF().getDb());
+                ref.setId(concatenateStringList(xmlLink.getDbXREF().getIDS(), ','));
+                crossReferences.add(ref);
+            }
+        }
+        project.setExternalLinks(links);
+        project.setCrossReferences(crossReferences);
+    }
+
     public void addDescription(BioProject project, Project.ProjectDescr descr) {
-        // TODO: links, refseq, relevance, userterm, locus tag prefix
+        // TODO: userterm
         // TODO: grant information
         project.setDescription(descr.getDescription());
         project.setName(descr.getName());
@@ -156,6 +220,8 @@ public class DomainConverter implements PackageProcessor {
         addRelevanceFields(project, descr.getRelevance());
         addLocusTags(project, descr.getLocusTagPrefixes());
         addPublications(project, descr.getPublications());
+        addLinks(project, descr.getExternalLinks());
+        // not mapped: RefSeq
     }
 
     public void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {

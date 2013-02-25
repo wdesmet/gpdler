@@ -43,6 +43,6 @@ public class DocumentChunkerTest {
      */
     @Test
     public void parseBioProjectXml() throws Exception {
-        assertEquals(3, parseBioProjectFile().size());
+        assertEquals(4, parseBioProjectFile().size());
     }
 }
