@@ -10,6 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,8 +35,14 @@ public class DocumentChunkerTest {
             }
         });
         reader.setContentHandler(chunker);
-        reader.parse(DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml").toExternalForm());
-        return packageList;
+        URL xmlUrl = DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml");
+        if (xmlUrl == null) {
+            throw new RuntimeException("Unable to fetch bioproject.xml");
+        }
+        else {
+            reader.parse(xmlUrl.toExternalForm());
+            return packageList;
+        }
     }
 
     /**
