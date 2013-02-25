@@ -5,6 +5,9 @@
     xmlns:xjc= "http://java.sun.com/xml/ns/jaxb/xjc" extensionBindingPrefixes="xjc">
     <globalBindings>
         <xjc:simple />
+        <javaType name="java.util.Calendar" xmlType="xs:dateTime"
+                  parseMethod="javax.xml.bind.DatatypeConverter.parseDateTime"
+                  printMethod="javax.xml.bind.DatatypeConverter.printDateTime" />
     </globalBindings>
     <bindings schemaLocation="Core.xsd" node="/xs:schema">
         <schemaBindings>
