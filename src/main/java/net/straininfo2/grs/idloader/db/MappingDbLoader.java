@@ -4,9 +4,10 @@ import net.straininfo2.grs.idloader.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -27,7 +28,7 @@ public abstract class MappingDbLoader {
 
 	private final static Logger logger = LoggerFactory.getLogger(MappingDbLoader.class);
 	
-	private SimpleJdbcTemplate template;
+	private NamedParameterJdbcTemplate template;
 	
 	private TransactionTemplate txTemplate;
 	
@@ -38,17 +39,21 @@ public abstract class MappingDbLoader {
     private ConcurrentHashMap<Provider, Provider> providerMap;
 
     public MappingDbLoader() {
-        this.categoryMap = new ConcurrentHashMap<Category, Category>();
-        this.providerMap = new ConcurrentHashMap<Provider, Provider>();
+        this.categoryMap = new ConcurrentHashMap<>();
+        this.providerMap = new ConcurrentHashMap<>();
     }
 	
 	public void setDataSource(DataSource source) {
-		this.template = new SimpleJdbcTemplate(source);
+		this.template = new NamedParameterJdbcTemplate(source);
 	}
 	
-	public SimpleJdbcTemplate getTemplate() {
-		return this.template;
+	public JdbcOperations getTemplate() {
+		return this.template.getJdbcOperations();
 	}
+
+    public NamedParameterJdbcTemplate getNamedTemplate() {
+        return this.template;
+    }
 	
 	public void setTransactionManager(PlatformTransactionManager manager) {
 		this.txTemplate = new TransactionTemplate(manager);
@@ -89,19 +94,19 @@ public abstract class MappingDbLoader {
     }
 
 	public void updateIfChanged(final Map<Integer, List<Mapping>> grsMapping, final Map<Provider, TargetIdExtractor> extractors) {
-		final Set<Provider> allProviders = new HashSet<Provider>(
-				getTemplate().query("SELECT id, name, abbr, url FROM " + namespace + ".providers", 
-				new RowMapper<Provider>() {
+		final Set<Provider> allProviders = new HashSet<>(
+				getTemplate().query("SELECT id, name, abbr, url FROM " + namespace + ".providers",
+                        new RowMapper<Provider>() {
 
-					@Override
-					public Provider mapRow(ResultSet rs, int rowNum)
-							throws SQLException {
-                        Provider provider = new Provider(rs.getString("name"), rs.getString("abbr"),
-                                rs.getInt("id"), rs.getString("url"));
-						return Loader.dedupKey(providerMap, provider);
-					}
+                            @Override
+                            public Provider mapRow(ResultSet rs, int rowNum)
+                                    throws SQLException {
+                                Provider provider = new Provider(rs.getString("name"), rs.getString("abbr"),
+                                        rs.getInt("id"), rs.getString("url"));
+                                return Loader.dedupKey(providerMap, provider);
+                            }
 
-				}));
+                        }));
 		getTxTemplate().execute(new TransactionCallbackWithoutResult() {
 			
 			@Override
@@ -124,7 +129,7 @@ public abstract class MappingDbLoader {
 						providers.removeAll(allProviders);
 						if (!providers.isEmpty()) {
 							try {
-								getTemplate()
+								getNamedTemplate()
 										.batchUpdate(
 												"INSERT INTO " + namespace + ".providers(id, name, abbr, url) "
 														+ "VALUES (:id, :name, :abbr, :url)",
