@@ -13,6 +13,14 @@ import java.util.List;
 
 import static net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance.RelevantField.*;
 
+/**
+ * Translates XML binding class instances to the domain model of the database.
+ * Not all information is included, only what is deemed necessary or
+ * interesting. The documentation of the individual domain classes has some
+ * more information on what is and isn't included.
+ *
+ * @see BioProject
+ */
 public class DomainConverter implements PackageProcessor {
 
     private DomainHandler handler;
