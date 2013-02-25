@@ -211,9 +211,33 @@ public class DomainConverter implements PackageProcessor {
         project.setCrossReferences(crossReferences);
     }
 
+    public void addUserTerms(BioProject project, List<Project.ProjectDescr.UserTerm> userTerms) {
+        List<UserTerm> terms = new ArrayList<>(userTerms.size());
+        for (Project.ProjectDescr.UserTerm userTerm : userTerms) {
+            UserTerm term = new UserTerm();
+            term.setCategory(userTerm.getCategory());
+            term.setTerm(userTerm.getTerm());
+            term.setUnits(userTerm.getUnits());
+            term.setValue(userTerm.getValue());
+            terms.add(term);
+        }
+        project.setUserTerms(terms);
+    }
+
+    public void addGrants(BioProject project, List<Project.ProjectDescr.Grant> grants) {
+        List<Grant> projectGrants = new ArrayList<>(grants.size());
+        for (Project.ProjectDescr.Grant grant : grants) {
+            Grant projectGrant = new Grant();
+            projectGrant.setAgencyName(grant.getAgency().getValue());
+            projectGrant.setAgencyAbbr(grant.getAgency().getAbbr());
+            projectGrant.setGrantId(grant.getGrantId());
+            projectGrant.setTitle(grant.getTitle());
+            projectGrants.add(projectGrant);
+        }
+        project.setGrants(projectGrants);
+    }
+
     public void addDescription(BioProject project, Project.ProjectDescr descr) {
-        // TODO: userterm
-        // TODO: grant information
         project.setDescription(descr.getDescription());
         project.setName(descr.getName());
         project.setTitle(descr.getTitle());
@@ -221,6 +245,8 @@ public class DomainConverter implements PackageProcessor {
         addLocusTags(project, descr.getLocusTagPrefixes());
         addPublications(project, descr.getPublications());
         addLinks(project, descr.getExternalLinks());
+        addUserTerms(project, descr.getUserTerms());
+        addGrants(project, descr.getGrants());
         // not mapped: RefSeq
     }
 
@@ -239,5 +265,7 @@ public class DomainConverter implements PackageProcessor {
         // finish by handing this project off to the next filter in the chain
         handler.processBioProject(project);
     }
+
+    // TODO: test grant, user term
 
 }

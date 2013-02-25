@@ -43,6 +43,8 @@ public class BioProject {
 
     private Collection<UserTerm> userTerms;
 
+    private Collection<Grant> grants;
+
     public long getProjectId() {
         return projectId;
     }
@@ -138,4 +140,13 @@ public class BioProject {
     public void setUserTerms(Collection<UserTerm> userTerms) {
         this.userTerms = userTerms;
     }
+
+    public Collection<Grant> getGrants() {
+        return grants;
+    }
+
+    public void setGrants(Collection<Grant> grants) {
+        this.grants = grants;
+    }
+
 }
