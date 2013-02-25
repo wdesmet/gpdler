@@ -4,6 +4,7 @@ import net.straininfo2.grs.idloader.bioproject.bindings.Project;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
+import net.straininfo2.grs.idloader.bioproject.domain.Publication;
 import org.junit.Test;
 
 import java.util.List;
@@ -25,8 +26,12 @@ public class DomainConversionTest {
 
     private static Project retrieveBordetellaProject() throws Exception {
         List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
-        // SAX parses in document order, so we know which one this is
         return typePackages.get(1).getProject().getProject();
+    }
+
+    private static Project retrieveAtribeusProject() throws Exception {
+        List<TypePackage> typePackages = DocumentChunkerTest.parseBioProjectFile();
+        return typePackages.get(2).getProject().getProject();
     }
 
     @Test
@@ -47,7 +52,7 @@ public class DomainConversionTest {
         assertEquals("Borrelia burgdorferi B31", project.getName());
         assertEquals("Causes Lyme disease", project.getTitle());
         assertTrue(project.getDescription().contains("ATCC 35210"));
-        // publications, external links, locus tag prefix and release date not parsed
+        // external links, locus tag prefix and release date not parsed
         // "RefSeq" tag not used here
     }
 
@@ -66,6 +71,15 @@ public class DomainConversionTest {
         BioProject project = new BioProject();
         new DomainConverter().addLocusTags(project, retrieveBorreliaProject().getProjectDescr().getLocusTagPrefixes());
         assertEquals("BB", project.getLocusTagPrefixes().iterator().next());
+    }
+
+    @Test
+    public void testPublications() throws Exception {
+        BioProject project = new BioProject();
+        new DomainConverter().addPublications(project, retrieveAtribeusProject().getProjectDescr().getPublications());
+        Publication publication = project.getPublications().iterator().next();
+        assertEquals("PLoS One.", publication.getJournalTitle());
+        assertEquals("Schountz" ,publication.getAuthors().get(0).getLastName());
     }
 
 }

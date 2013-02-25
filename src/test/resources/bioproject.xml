@@ -268,4 +268,112 @@
             </Submission>
         </Submission>
     </Package>
+    <Package>
+        <Project>
+            <Project>
+                <ProjectID>
+                    <ArchiveID accession="PRJNA61227" archive="NCBI" id="61227"/>
+                </ProjectID>
+                <ProjectDescr>
+                    <Name>Artibeus jamaicensis</Name>
+                    <Title>Jamaican fruit-eating bat transcriptome</Title>
+                    <Description>1. Concanavalin-A and LPS-activated splenocytes
+                        2. Pooled sample containing RNA from (a) liver, (b) lung, (c) kidney and (d) primary kidney cells activated with poly-IC.
+                        This is a common New World fruit bat and is used for studying bats in the tropical Americas. It is also thought to be the reservoir of Tacarbe virus.</Description>
+                    <Publication date="2011-11-15T00:00:00Z" id="23166587" status="ePublished">
+                        <Reference/>
+                        <StructuredCitation>
+                            <Title>Transcriptome sequencing and annotation for the Jamaican fruit bat (Artibeus jamaicensis)</Title>
+                            <Journal>
+                                <JournalTitle>PLoS One.</JournalTitle>
+                                <Year>2012</Year>
+                                <Volume>7</Volume>
+                            </Journal>
+                            <AuthorSet>
+                                <Author>
+                                    <Name>
+                                        <First>T</First>
+                                        <Last>Schountz</Last>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>R</First>
+                                        <Last>Adams</Last>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>T</First>
+                                        <Last>Glenn</Last>
+                                        <Middle>C</Middle>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>A</First>
+                                        <Last>Hawkinson</Last>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>L</First>
+                                        <Last>Liu</Last>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>W</First>
+                                        <Last>Chou</Last>
+                                        <Middle>C</Middle>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>A</First>
+                                        <Last>Srivastava</Last>
+                                    </Name>
+                                </Author>
+                                <Author>
+                                    <Name>
+                                        <First>T</First>
+                                        <Last>Shaw</Last>
+                                        <Middle>I</Middle>
+                                    </Name>
+                                </Author>
+                            </AuthorSet>
+                        </StructuredCitation>
+                        <DbType>ePubmed</DbType>
+                    </Publication>
+                    <LocusTagPrefix>EYA</LocusTagPrefix>
+                </ProjectDescr>
+                <ProjectType>
+                    <ProjectTypeSubmission>
+                        <Target capture="eWhole" material="eTranscriptome" sample_scope="eMonoisolate">
+                            <Organism species="9417" taxID="9417">
+                                <OrganismName>Artibeus jamaicensis</OrganismName>
+                                <Supergroup>eEukaryotes</Supergroup>
+                            </Organism>
+                        </Target>
+                        <Method method_type="eSequencing"/>
+                        <Objectives>
+                            <Data data_type="eOther"/>
+                        </Objectives>
+                    </ProjectTypeSubmission>
+                </ProjectType>
+            </Project>
+        </Project>
+        <Submission>
+            <Submission submitted="2010-12-15">
+                <Description>
+                    <!-- Comment has been removed -->
+                    <Organization role="owner" type="center">
+                        <Name abbr="University of Northern Colorado">University of Northern Colorado</Name>
+                        <!-- Contact information has been removed -->
+                    </Organization>
+                    <Access>public</Access>
+                </Description>
+            </Submission>
+        </Submission>
+    </Package>
 </PackageSet>

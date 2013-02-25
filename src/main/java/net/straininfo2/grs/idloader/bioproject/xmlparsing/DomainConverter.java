@@ -1,13 +1,9 @@
 package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 
-import net.straininfo2.grs.idloader.bioproject.bindings.Project;
-import net.straininfo2.grs.idloader.bioproject.bindings.TypeArchiveID;
-import net.straininfo2.grs.idloader.bioproject.bindings.TypeLocusTagPrefix;
-import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
-import net.straininfo2.grs.idloader.bioproject.domain.Archive;
-import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
-import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
+import net.straininfo2.grs.idloader.bioproject.bindings.*;
+import net.straininfo2.grs.idloader.bioproject.domain.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,14 +88,74 @@ public class DomainConverter implements PackageProcessor {
         project.setLocusTagPrefixes(locusTags);
     }
 
+    public void addPublications(BioProject project, List<TypePublication> publications) {
+        ArrayList<Publication> pubList = new ArrayList<>(publications.size());
+        for (TypePublication pub : publications) {
+            Publication publication = new Publication();
+            switch(pub.getDbType()) {
+                case "ePMC":
+                    publication.setDbType(Publication.PublicationDB.PMC);
+                    break;
+                case "ePubmed":
+                    publication.setDbType(Publication.PublicationDB.PUBMED);
+                    break;
+                case "eDOI":
+                    publication.setDbType(Publication.PublicationDB.DOI);
+                    break;
+                case "eNotAvailable":
+                default:
+                    publication.setDbType(Publication.PublicationDB.NOT_AVAILABLE);
+                    break;
+            }
+            if (pub.getStatus() != null) {
+                if (pub.getStatus().equals("ePublished")) {
+                    publication.setPublicationStatus(Publication.PublicationStatus.PUBLISHED);
+                }
+                else {
+                    publication.setPublicationStatus(Publication.PublicationStatus.UNPUBLISHED);
+                }
+            }
+            publication.setPublicationDate(pub.getDate());
+            publication.setPublicationId(pub.getId());
+            publication.setFreeFormCitation(pub.getReference());
+            TypePublication.StructuredCitation citation = pub.getStructuredCitation();
+            if (citation != null) {
+                publication.setTitle(citation.getTitle());
+                TypePublication.StructuredCitation.Journal journal = citation.getJournal();
+                publication.setJournalTitle(journal.getJournalTitle());
+                publication.setIssue(journal.getIssue());
+                publication.setPagesFrom(journal.getPagesFrom());
+                publication.setPagesTo(journal.getPagesTo());
+                publication.setVolume(journal.getVolume());
+                publication.setYear(journal.getYear());
+                if (citation.getAuthorSet() != null) {
+                    List<Author> dAuthors = new ArrayList<>(citation.getAuthorSet().getAuthors().size());
+                    for (TypePublication.StructuredCitation.AuthorSet.Author author : citation.getAuthorSet().getAuthors()) {
+                        Author dAuthor = new Author();
+                        dAuthor.setConsortium(author.getConsortium());
+                        dAuthor.setFirstName(author.getName().getFirst());
+                        dAuthor.setMiddleName(author.getName().getMiddle());
+                        dAuthor.setLastName(author.getName().getLast());
+                        dAuthor.setSuffix(author.getName().getSuffix());
+                        dAuthors.add(dAuthor);
+                    }
+                    publication.setAuthors(dAuthors);
+                }
+            }
+            pubList.add(publication);
+        }
+        project.setPublications(pubList);
+    }
+
     public void addDescription(BioProject project, Project.ProjectDescr descr) {
-        // TODO: links, publications, refseq, relevance, userterm, locus tag prefix
+        // TODO: links, refseq, relevance, userterm, locus tag prefix
         // TODO: grant information
         project.setDescription(descr.getDescription());
         project.setName(descr.getName());
         project.setTitle(descr.getTitle());
         addRelevanceFields(project, descr.getRelevance());
         addLocusTags(project, descr.getLocusTagPrefixes());
+        addPublications(project, descr.getPublications());
     }
 
     public void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {

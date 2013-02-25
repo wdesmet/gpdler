@@ -35,6 +35,8 @@ public class BioProject {
 
     private Collection<String> locusTagPrefixes;
 
+    private Collection<Publication> publications;
+
     public long getProjectId() {
         return projectId;
     }
@@ -99,4 +101,11 @@ public class BioProject {
         this.locusTagPrefixes = locusTagPrefixes;
     }
 
+    public Collection<Publication> getPublications() {
+        return publications;
+    }
+
+    public void setPublications(Collection<Publication> publications) {
+        this.publications = publications;
+    }
 }
