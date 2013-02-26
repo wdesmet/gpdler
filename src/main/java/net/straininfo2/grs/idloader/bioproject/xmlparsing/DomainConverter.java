@@ -273,6 +273,15 @@ public class DomainConverter implements PackageProcessor {
                 }
             }
         }
+        if (properties.getBiologicalSample() != null) {
+            // TODO: add sample data
+        }
+        if (properties.getEnvironment() != null) {
+            // TODO: add environment data
+        }
+        if (properties.getPhenotype() != null) {
+            // TODO: add phenotype
+        }
     }
 
     public void addOrganismData(BioProject project, TypeOrganism organismData) {
