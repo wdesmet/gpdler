@@ -3,6 +3,7 @@ package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 import net.straininfo2.grs.idloader.bioproject.bindings.Project;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
+import net.straininfo2.grs.idloader.bioproject.domain.OrganismEnvironment;
 import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
 import net.straininfo2.grs.idloader.bioproject.domain.Publication;
 import org.junit.Before;
@@ -92,6 +93,13 @@ public class DomainConversionTest {
         assertEquals(3, project.getExternalLinks().size());
         assertEquals(1, project.getCrossReferences().size());
         assertEquals("phs000228", project.getCrossReferences().iterator().next().getId());
+    }
+
+    @Test
+    public void testOrganismConversion() throws Exception {
+        converter.addTypeSpecificInformation(project, retrieveBorreliaProject().getProjectType());
+        assertEquals(Boolean.FALSE, project.getOrganism().getMorphology().getMotility());
+        assertTrue(project.getOrganism().getEnvironment().getOxygenReq() == OrganismEnvironment.OxygenReq.eMicroaerophilic);
     }
 
 }

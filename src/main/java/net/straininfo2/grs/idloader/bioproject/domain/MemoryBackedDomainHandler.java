@@ -18,6 +18,16 @@ public class MemoryBackedDomainHandler implements DomainHandler {
         projectList.add(project);
     }
 
+    @Override
+    public void processAdminBioProject(AdminBioProject project) {
+        processBioProject(project);
+    }
+
+    @Override
+    public void processSubmissionBioProject(SubmissionBioProject project) {
+        processBioProject(project);
+    }
+
     public List<BioProject> getProjectList() {
         return Collections.unmodifiableList(projectList);
     }

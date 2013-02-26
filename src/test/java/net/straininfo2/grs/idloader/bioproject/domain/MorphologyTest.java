@@ -11,12 +11,12 @@ public class MorphologyTest {
 
     @Test
     public void testShapeToString() {
-        assertEquals("eBacilli", OrganismMorphology.Shape.BACILLI.toString());
-        assertEquals("eCurvedShaped", OrganismMorphology.Shape.CURVED_SHAPED.toString());
+        assertEquals("eBacilli", OrganismMorphology.Shape.eBacilli.toString());
+        assertEquals("eCurvedShaped", OrganismMorphology.Shape.eCurvedShaped.toString());
     }
 
     @Test
     public void testStringToShape() {
-        assertEquals(OrganismMorphology.Shape.FUSOBACTERIA, OrganismMorphology.Shape.fromString("eFusobacteria"));
+        assertEquals(OrganismMorphology.Shape.eFusobacteria, OrganismMorphology.Shape.valueOf("eFusobacteria"));
     }
 }

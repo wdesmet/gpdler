@@ -42,16 +42,16 @@ public class Publication {
     private List<Author> authors;
 
     public enum PublicationDB {
-        PMC,
-        PUBMED,
-        DOI,
-        NOT_AVAILABLE
+        ePMC,
+        ePubmed,
+        eDOI,
+        eNotAvailable;
     }
 
     /* not mapped as a boolean, in case new fields are added later */
     public enum PublicationStatus {
-        PUBLISHED,
-        UNPUBLISHED
+        ePublished,
+        eUnpublished;
     }
 
     public String getFreeFormCitation() {

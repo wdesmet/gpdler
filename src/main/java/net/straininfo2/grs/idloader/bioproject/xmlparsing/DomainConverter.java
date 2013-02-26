@@ -34,6 +34,14 @@ public class DomainConverter implements PackageProcessor {
             public void processBioProject(BioProject project) {
                 // default does nothing.
             }
+
+            @Override
+            public void processAdminBioProject(AdminBioProject project) {
+            }
+
+            @Override
+            public void processSubmissionBioProject(SubmissionBioProject project) {
+            }
         };
     }
 
@@ -124,28 +132,10 @@ public class DomainConverter implements PackageProcessor {
         ArrayList<Publication> pubList = new ArrayList<>(publications.size());
         for (TypePublication pub : publications) {
             Publication publication = new Publication();
-            switch(pub.getDbType()) {
-                case "ePMC":
-                    publication.setDbType(Publication.PublicationDB.PMC);
-                    break;
-                case "ePubmed":
-                    publication.setDbType(Publication.PublicationDB.PUBMED);
-                    break;
-                case "eDOI":
-                    publication.setDbType(Publication.PublicationDB.DOI);
-                    break;
-                case "eNotAvailable":
-                default:
-                    publication.setDbType(Publication.PublicationDB.NOT_AVAILABLE);
-                    break;
-            }
+            publication.setDbType(Publication.PublicationDB.valueOf(pub.getDbType()));
+
             if (pub.getStatus() != null) {
-                if (pub.getStatus().equals("ePublished")) {
-                    publication.setPublicationStatus(Publication.PublicationStatus.PUBLISHED);
-                }
-                else {
-                    publication.setPublicationStatus(Publication.PublicationStatus.UNPUBLISHED);
-                }
+                publication.setPublicationStatus(Publication.PublicationStatus.valueOf(pub.getStatus()));
             }
             publication.setPublicationDate(pub.getDate());
             publication.setPublicationId(pub.getId());
@@ -250,7 +240,7 @@ public class DomainConverter implements PackageProcessor {
         // not mapped: RefSeq
     }
 
-    public void addBiologicalProperties(BioProject project, TypeOrganism.BiologicalProperties properties) {
+    public void addBiologicalProperties(Organism organism, TypeOrganism.BiologicalProperties properties) {
         if (properties.getMorphology() != null) {
             TypeOrganism.BiologicalProperties.Morphology data = properties.getMorphology();
             OrganismMorphology morphology = new OrganismMorphology();
@@ -261,7 +251,7 @@ public class DomainConverter implements PackageProcessor {
                 morphology.setEnveloped(data.getEnveloped().equals("eYes"));
             }
             if (data.getGram() != null) {
-                morphology.setGram(OrganismMorphology.Gram.fromString(data.getGram()));
+                morphology.setGram(OrganismMorphology.Gram.valueOf(data.getGram()));
             }
             if (data.getMotility() != null) {
                 morphology.setMotility(data.getMotility().equals("eYes"));
@@ -269,18 +259,57 @@ public class DomainConverter implements PackageProcessor {
             if (data.getShapes() != null) {
                 Set<OrganismMorphology.Shape> shapes = EnumSet.noneOf(OrganismMorphology.Shape.class);
                 for (String shape : data.getShapes()) {
-                    shapes.add(OrganismMorphology.Shape.fromString(shape));
+                    shapes.add(OrganismMorphology.Shape.valueOf(shape));
                 }
             }
+            organism.setMorphology(morphology);
         }
         if (properties.getBiologicalSample() != null) {
-            // TODO: add sample data
+            OrganismSample oSample = new OrganismSample();
+            TypeOrganism.BiologicalProperties.BiologicalSample sample = properties.getBiologicalSample();
+            if (sample.getCellSample() != null) {
+                oSample.setIsolatedCell(sample.getCellSample().equals("eIsolated"));
+            }
+            if (sample.getTissueSample() != null) {
+                oSample.setTissueSample(true);
+            }
+            else {
+                oSample.setTissueSample(false);
+            }
+            if (sample.getCultureSample() != null) {
+                oSample.setCultureSampleInfo(OrganismSample.CultureType.valueOf(sample.getCultureSample()));
+            }
+            organism.setSample(oSample);
         }
         if (properties.getEnvironment() != null) {
-            // TODO: add environment data
+            OrganismEnvironment oEnv = new OrganismEnvironment();
+            TypeOrganism.BiologicalProperties.Environment env = properties.getEnvironment();
+            oEnv.setHabitat(env.getHabitat() == null ?
+                    null :
+                    OrganismEnvironment.Habitat.valueOf(env.getHabitat()));
+            oEnv.setOxygenReq(env.getOxygenReq() == null ?
+                    null :
+                    OrganismEnvironment.OxygenReq.valueOf(env.getOxygenReq()));
+            oEnv.setTemperatureRange(env.getTemperatureRange() == null ?
+                    null :
+                    OrganismEnvironment.TemperatureRange.valueOf(env.getTemperatureRange()));
+            oEnv.setSalinity(env.getSalinity() == null ?
+                    null :
+                    OrganismEnvironment.Salinity.valueOf(env.getSalinity()));
+            oEnv.setOptimumTemperature(env.getOptimumTemperature());
+            organism.setEnvironment(oEnv);
         }
         if (properties.getPhenotype() != null) {
-            // TODO: add phenotype
+            OrganismPhenotype oPheno = new OrganismPhenotype();
+            TypeOrganism.BiologicalProperties.Phenotype pheno = properties.getPhenotype();
+            oPheno.setBioticRelationship(pheno.getBioticRelationship() == null ?
+                    null :
+                    OrganismPhenotype.BioticRelationship.valueOf(pheno.getBioticRelationship()));
+            oPheno.setTrophicLevel(pheno.getTrophicLevel() == null ?
+                    null :
+                    OrganismPhenotype.TrophicLevel.valueOf(pheno.getTrophicLevel()));
+            oPheno.setDisease(pheno.getDisease());
+            organism.setPhenotype(oPheno);
         }
     }
 
@@ -302,7 +331,7 @@ public class DomainConverter implements PackageProcessor {
             organism.setGenomeSizeUnits(organismData.getGenomeSize().getUnits());
         }
         if (organismData.getBiologicalProperties() != null) {
-            addBiologicalProperties(project, organismData.getBiologicalProperties());
+            addBiologicalProperties(organism, organismData.getBiologicalProperties());
         }
         project.setOrganism(organism);
     }
@@ -319,18 +348,38 @@ public class DomainConverter implements PackageProcessor {
         }
     }
 
+    public void addCommonFields(BioProject project, Project xmlProject) {
+        addIdentifiers(project, xmlProject.getProjectID());
+        addDescription(project, xmlProject.getProjectDescr());
+        addTypeSpecificInformation(project, xmlProject.getProjectType());
+    }
+
     @Override
     public void processPackage(TypePackage nextPackage) {
         Project xmlProject = nextPackage.getProject().getProject();
         //Submission xmlSubmission = nextPackage.getSubmission().getSubmission();
-        BioProject project = new BioProject();
-        addIdentifiers(project, xmlProject.getProjectID());
-        addDescription(project, xmlProject.getProjectDescr());
-        addTypeSpecificInformation(project, xmlProject.getProjectType());
-        // finish by handing this project off to the next filter in the chain
-        handler.processBioProject(project);
+        if (xmlProject.getProjectType().getProjectTypeTopAdmin() != null) {
+            AdminBioProject project = new AdminBioProject();
+            if (xmlProject.getProjectType().getProjectTypeTopAdmin().getSubtype() != null) {
+                project.setSubType(AdminBioProject.ProjectSubType.valueOf(xmlProject.getProjectType().getProjectTypeTopAdmin().getSubtype()));
+                project.setDescriptionOther(xmlProject.getProjectType().getProjectTypeTopAdmin().getDescriptionSubtypeOther());
+            }
+            addCommonFields(project, xmlProject);
+            handler.processAdminBioProject(project);
+        }
+        else if (xmlProject.getProjectType().getProjectTypeSubmission() != null) {
+            SubmissionBioProject project = new SubmissionBioProject();
+            addCommonFields(project, xmlProject);
+            // TODO: add any relevant submission project fields
+            handler.processSubmissionBioProject(project);
+        }
+        else {
+            BioProject project = new BioProject();
+            addCommonFields(project, xmlProject);
+            handler.processBioProject(project);
+        }
     }
 
-    // TODO: test grant, user term
+    // TODO: test grant, user term, organism data
 
 }
