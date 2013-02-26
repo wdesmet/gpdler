@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.straininfo2.grs</groupId>
-    <artifactId>idloader</artifactId>
-    <version>0.0.5</version>
+    <artifactId>gpdler</artifactId>
+    <version>0.0.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>idloader</name>
+    <name>Genome Project Information Downloader</name>
     <url>http://grs.straininfo.net</url>
 
     <properties>
