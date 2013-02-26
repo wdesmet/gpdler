@@ -45,6 +45,9 @@ public class BioProject {
 
     private Collection<Grant> grants;
 
+    // always one organism per project, no matter the type
+    private Organism organism;
+
     public long getProjectId() {
         return projectId;
     }
@@ -147,6 +150,14 @@ public class BioProject {
 
     public void setGrants(Collection<Grant> grants) {
         this.grants = grants;
+    }
+
+    public Organism getOrganism() {
+        return organism;
+    }
+
+    public void setOrganism(Organism organism) {
+        this.organism = organism;
     }
 
 }

@@ -250,8 +250,64 @@ public class DomainConverter implements PackageProcessor {
         // not mapped: RefSeq
     }
 
-    public void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {
+    public void addBiologicalProperties(BioProject project, TypeOrganism.BiologicalProperties properties) {
+        if (properties.getMorphology() != null) {
+            TypeOrganism.BiologicalProperties.Morphology data = properties.getMorphology();
+            OrganismMorphology morphology = new OrganismMorphology();
+            if (data.getEndospores() != null) {
+                morphology.setEndospores(data.getEndospores().equals("eYes"));
+            }
+            if (data.getEnveloped() != null) {
+                morphology.setEnveloped(data.getEnveloped().equals("eYes"));
+            }
+            if (data.getGram() != null) {
+                morphology.setGram(OrganismMorphology.Gram.fromString(data.getGram()));
+            }
+            if (data.getMotility() != null) {
+                morphology.setMotility(data.getMotility().equals("eYes"));
+            }
+            if (data.getShapes() != null) {
+                Set<OrganismMorphology.Shape> shapes = EnumSet.noneOf(OrganismMorphology.Shape.class);
+                for (String shape : data.getShapes()) {
+                    shapes.add(OrganismMorphology.Shape.fromString(shape));
+                }
+            }
+        }
+    }
 
+    public void addOrganismData(BioProject project, TypeOrganism organismData) {
+        Organism organism = new Organism();
+        organism.setOrganismName(organismData.getOrganismName());
+        organism.setLabel(organismData.getLabel());
+        organism.setStrain(organismData.getStrain());
+        organism.setIsolateName(organismData.getIsolateName());
+        organism.setBreed(organismData.getBreed());
+        organism.setCultivar(organismData.getCultivar());
+        organism.setSupergroup(organismData.getSupergroup());
+        organism.setTaxID(organismData.getTaxID());
+        organism.setSpecies(organismData.getSpecies());
+        organism.setOrganization(organismData.getOrganization());
+        organism.setReproduction(organismData.getReproduction());
+        if (organismData.getGenomeSize() != null) {
+            organism.setGenomeSize(organismData.getGenomeSize().getValue().longValue());
+            organism.setGenomeSizeUnits(organismData.getGenomeSize().getUnits());
+        }
+        if (organismData.getBiologicalProperties() != null) {
+            addBiologicalProperties(project, organismData.getBiologicalProperties());
+        }
+        project.setOrganism(organism);
+    }
+
+    public void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {
+        if (type.getProjectTypeSubmission() != null) {
+            addOrganismData(project, type.getProjectTypeSubmission().getTarget().getOrganism());
+        }
+        else if (type.getProjectTypeTopAdmin() != null) {
+            addOrganismData(project, type.getProjectTypeTopAdmin().getOrganism());
+        }
+        else if (type.getProjectTypeTopSingleOrganism() != null) {
+            addOrganismData(project, type.getProjectTypeTopSingleOrganism().getOrganism());
+        }
     }
 
     @Override
