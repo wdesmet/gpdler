@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 	<!-- Commons DBCP configuration -->
 	<!-- First: a connection factory that creates the connections to the database -->
     <!--
@@ -24,9 +24,33 @@
 		<property name="username" value="${grs.username}" />
 		<property name="password" value="${grs.password}" />
 	</bean>
+    <bean id="xmlDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="url" value="${grs.newdb.dburl}" />
+        <property name="username" value="${grs.newdb.username}" />
+        <property name="password" value="${grs.newdb.password}" />
+    </bean>
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+    <bean id="xmltransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="dataSource" ref="xmlDataSource" />
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <!-- A straight up hibernate session factory, can be used elsewhere -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="xmlDataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+            </props>
+        </property>
+        <!-- we use hibernate annotations to (hopefully) get everything configured -->
+        <property name="packagesToScan" value="net.straininfo2.grs.idloader.bioproject.domain" />
+    </bean>
+    <!-- hibernateConfiguration is a Configuration object, can be used to dump the config -->
     <!-- Collection class storing categories and providers, based on their name -->
     <bean id="catMap" class="java.util.concurrent.ConcurrentHashMap" />
     <bean id="provMap" class="java.util.concurrent.ConcurrentHashMap" />
