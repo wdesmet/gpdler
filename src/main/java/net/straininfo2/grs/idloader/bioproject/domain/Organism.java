@@ -1,6 +1,11 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class Organism {
+
+    private long id;
     
     private String organismName;
     
@@ -35,6 +40,16 @@ public class Organism {
     private OrganismPhenotype phenotype;
 
     private OrganismSample sample;
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     //private TypeOrganism.BiologicalProperties biologicalProperties;
     
@@ -144,6 +159,7 @@ public class Organism {
         this.genomeSizeUnits = genomeSizeUnits;
     }
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     public OrganismMorphology getMorphology() {
         return morphology;
     }
@@ -152,6 +168,7 @@ public class Organism {
         this.morphology = morphology;
     }
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     public OrganismEnvironment getEnvironment() {
         return environment;
     }
@@ -160,6 +177,7 @@ public class Organism {
         this.environment = environment;
     }
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     public OrganismPhenotype getPhenotype() {
         return phenotype;
     }
@@ -168,6 +186,7 @@ public class Organism {
         this.phenotype = phenotype;
     }
 
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     public OrganismSample getSample() {
         return sample;
     }

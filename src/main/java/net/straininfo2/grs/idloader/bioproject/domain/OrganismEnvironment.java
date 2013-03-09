@@ -1,5 +1,10 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class OrganismEnvironment {
 
     public enum Salinity {
@@ -35,6 +40,8 @@ public class OrganismEnvironment {
         eSpecialized,
         eMultiple
     }
+
+    private long id;
     
     private Salinity salinity;
     
@@ -45,6 +52,16 @@ public class OrganismEnvironment {
     private TemperatureRange temperatureRange;
     
     private Habitat habitat;
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Salinity getSalinity() {
         return salinity;

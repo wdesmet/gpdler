@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.*;
 import java.util.Collection;
 
 /**
@@ -17,6 +18,7 @@ import java.util.Collection;
  * ProjectAssembly, ProjectSubmission, ProjectLinks, ProjectPresentation,
  * SecondaryArchiveID, CenterID and top-level Submission tags.
  */
+@Entity
 public class BioProject {
 
     private long projectId;
@@ -48,6 +50,7 @@ public class BioProject {
     // always one organism per project, no matter the type
     private Organism organism;
 
+    @Id
     public long getProjectId() {
         return projectId;
     }
@@ -96,6 +99,7 @@ public class BioProject {
         this.description = description;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public Collection<ProjectRelevance> getProjectRelevance() {
         return projectRelevance;
     }
@@ -104,6 +108,7 @@ public class BioProject {
         this.projectRelevance = projectRelevance;
     }
 
+    @ElementCollection
     public Collection<String> getLocusTagPrefixes() {
         return locusTagPrefixes;
     }
@@ -112,6 +117,7 @@ public class BioProject {
         this.locusTagPrefixes = locusTagPrefixes;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public Collection<Publication> getPublications() {
         return publications;
     }
@@ -120,6 +126,7 @@ public class BioProject {
         this.publications = publications;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public Collection<ExternalLink> getExternalLinks() {
         return externalLinks;
     }
@@ -128,6 +135,7 @@ public class BioProject {
         this.externalLinks = externalLinks;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public Collection<DBXref> getCrossReferences() {
         return crossReferences;
     }
@@ -136,6 +144,7 @@ public class BioProject {
         this.crossReferences = crossReferences;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public Collection<UserTerm> getUserTerms() {
         return userTerms;
     }
@@ -144,6 +153,7 @@ public class BioProject {
         this.userTerms = userTerms;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public Collection<Grant> getGrants() {
         return grants;
     }
@@ -152,6 +162,7 @@ public class BioProject {
         this.grants = grants;
     }
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     public Organism getOrganism() {
         return organism;
     }

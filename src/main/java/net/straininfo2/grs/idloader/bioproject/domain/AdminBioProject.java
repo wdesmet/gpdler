@@ -1,9 +1,12 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Entity;
+
 /**
  * An administrative project. May contain extra information related to the
  * project type.
  */
+@Entity
 public class AdminBioProject extends BioProject {
 
     public enum ProjectSubType {

@@ -1,9 +1,16 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Possible fields in which a project can be relevant.
  */
+@Entity
 public class ProjectRelevance {
+
+    private long id;
 
     public enum RelevantField {
         AGRICULTURAL,
@@ -26,6 +33,16 @@ public class ProjectRelevance {
     public ProjectRelevance(RelevantField field, String description) {
         this.relevantField = field;
         this.relevanceDescription = description;
+    }
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public RelevantField getRelevantField() {

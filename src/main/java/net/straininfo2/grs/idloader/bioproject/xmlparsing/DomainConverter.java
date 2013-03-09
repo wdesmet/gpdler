@@ -193,7 +193,7 @@ public class DomainConverter implements PackageProcessor {
                 ref.setCategory(xmlLink.getCategory());
                 ref.setLabel(xmlLink.getLabel());
                 ref.setDb(xmlLink.getDbXREF().getDb());
-                ref.setId(concatenateStringList(xmlLink.getDbXREF().getIDS(), ','));
+                ref.setDbId(concatenateStringList(xmlLink.getDbXREF().getIDS(), ','));
                 crossReferences.add(ref);
             }
         }

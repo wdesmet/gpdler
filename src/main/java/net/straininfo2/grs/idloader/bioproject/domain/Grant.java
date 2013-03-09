@@ -1,6 +1,13 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Grant {
+
+    private long id;
 
     private String title;
 
@@ -9,6 +16,16 @@ public class Grant {
     private String agencyAbbr;
 
     private String grantId;
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

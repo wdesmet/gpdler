@@ -1,10 +1,10 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
-/**
- * User: wdesmet
- * Date: 2/26/13
- * Time: 10:43 AM
- */
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class OrganismPhenotype {
 
     public enum BioticRelationship {
@@ -23,12 +23,24 @@ public class OrganismPhenotype {
         eHeterotroph,
         eMixotroph
     }
+
+    private long id;
     
     private BioticRelationship bioticRelationship;
     
     private TrophicLevel trophicLevel;
 
     private String disease;
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public BioticRelationship getBioticRelationship() {
         return bioticRelationship;

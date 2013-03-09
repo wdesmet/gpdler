@@ -1,11 +1,18 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Sample information related to an organism. The names seem to suggest only
  * one of culture, cell or tissue sample info is present, but the schema is
  * configured to allow all three.
  */
+@Entity
 public class OrganismSample {
+
+    private long id;
 
     public enum CultureType {
         ePureCulture,
@@ -18,6 +25,16 @@ public class OrganismSample {
     private Boolean isIsolatedCell;
     
     private Boolean isTissueSample;
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public CultureType getCultureSampleInfo() {
         return cultureSampleInfo;

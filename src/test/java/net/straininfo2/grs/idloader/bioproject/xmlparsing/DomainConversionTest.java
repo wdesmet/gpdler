@@ -1,15 +1,12 @@
 package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 
 import net.straininfo2.grs.idloader.bioproject.bindings.Project;
-import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.OrganismEnvironment;
 import net.straininfo2.grs.idloader.bioproject.domain.ProjectRelevance;
 import net.straininfo2.grs.idloader.bioproject.domain.Publication;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -92,7 +89,7 @@ public class DomainConversionTest {
         converter.addLinks(project, retrieveHmpProject().getProjectDescr().getExternalLinks());
         assertEquals(3, project.getExternalLinks().size());
         assertEquals(1, project.getCrossReferences().size());
-        assertEquals("phs000228", project.getCrossReferences().iterator().next().getId());
+        assertEquals("phs000228", project.getCrossReferences().iterator().next().getDbId());
     }
 
     @Test

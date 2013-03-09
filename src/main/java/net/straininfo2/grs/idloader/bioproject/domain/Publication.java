@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +14,10 @@ import java.util.List;
  * Note that publications are only seldom filled in in the source XML, and
  * usually only contain a date and database ID.
  */
+@Entity
 public class Publication {
+
+    private long id;
 
     private PublicationDB dbType;
 
@@ -52,6 +56,16 @@ public class Publication {
     public enum PublicationStatus {
         ePublished,
         eUnpublished;
+    }
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFreeFormCitation() {
@@ -118,6 +132,7 @@ public class Publication {
         this.pagesTo = pagesTo;
     }
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Author> getAuthors() {
         return authors;
     }
