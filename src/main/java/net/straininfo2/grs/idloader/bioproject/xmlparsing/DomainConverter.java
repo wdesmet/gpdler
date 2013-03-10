@@ -85,43 +85,41 @@ public class DomainConverter implements PackageProcessor {
         if (relev == null) {
             return;
         }
-        List<ProjectRelevance> relevances = new LinkedList<>();
         if (relev.getAgricultural() != null) {
             ProjectRelevance relevance = new ProjectRelevance(AGRICULTURAL, relev.getAgricultural());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
         if (relev.getEnvironmental() != null) {
             ProjectRelevance relevance = new ProjectRelevance(ENVIRONMENTAL, relev.getEnvironmental());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
         if (relev.getEvolution() != null) {
             ProjectRelevance relevance = new ProjectRelevance(EVOLUTION, relev.getEvolution());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
         if (relev.getIndustrial() != null) {
             ProjectRelevance relevance = new ProjectRelevance(INDUSTRIAL, relev.getIndustrial());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
         if (relev.getMedical() != null) {
             ProjectRelevance relevance = new ProjectRelevance(MEDICAL, relev.getMedical());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
         if (relev.getModelOrganism() != null) {
             ProjectRelevance relevance = new ProjectRelevance(MODEL_ORGANISM, relev.getModelOrganism());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
         if (relev.getOther() != null) {
             ProjectRelevance relevance = new ProjectRelevance(OTHER, relev.getOther());
-            relevances.add(relevance);
+            project.addProjectRelevance(relevance);
         }
-        project.setProjectRelevance(relevances);
     }
 
     public void addLocusTags(BioProject project, List<TypeLocusTagPrefix> prefixes) {
         if (prefixes == null) {
             return;
         }
-        List<String> locusTags = new LinkedList<>();
+        Set<String> locusTags = new HashSet<>();
         for (TypeLocusTagPrefix prefix : prefixes) {
             locusTags.add(prefix.getValue());
         }
@@ -129,7 +127,6 @@ public class DomainConverter implements PackageProcessor {
     }
 
     public void addPublications(BioProject project, List<TypePublication> publications) {
-        ArrayList<Publication> pubList = new ArrayList<>(publications.size());
         for (TypePublication pub : publications) {
             Publication publication = new Publication();
             publication.setDbType(Publication.PublicationDB.valueOf(pub.getDbType()));
@@ -164,9 +161,8 @@ public class DomainConverter implements PackageProcessor {
                     publication.setAuthors(dAuthors);
                 }
             }
-            pubList.add(publication);
+            project.addPublication(publication);
         }
-        project.setPublications(pubList);
     }
 
     /**
@@ -178,15 +174,13 @@ public class DomainConverter implements PackageProcessor {
      * @param externalLinks List of external links parsed from XML
      */
     public void addLinks(BioProject project, List<TypeExternalLink> externalLinks) {
-        List<ExternalLink> links = new LinkedList<>();
-        List<DBXref> crossReferences = new LinkedList<>();
         for (TypeExternalLink xmlLink : externalLinks) {
             if (xmlLink.getDbXREF() == null) {
                 ExternalLink link = new ExternalLink();
                 link.setCategory(xmlLink.getCategory());
                 link.setLabel(xmlLink.getLabel());
                 link.setUrl(xmlLink.getURL());
-                links.add(link);
+                project.addExternalLink(link);
             }
             else {
                 DBXref ref = new DBXref();
@@ -194,37 +188,31 @@ public class DomainConverter implements PackageProcessor {
                 ref.setLabel(xmlLink.getLabel());
                 ref.setDb(xmlLink.getDbXREF().getDb());
                 ref.setDbId(concatenateStringList(xmlLink.getDbXREF().getIDS(), ','));
-                crossReferences.add(ref);
+                project.addDBXref(ref);
             }
         }
-        project.setExternalLinks(links);
-        project.setCrossReferences(crossReferences);
     }
 
     public void addUserTerms(BioProject project, List<Project.ProjectDescr.UserTerm> userTerms) {
-        List<UserTerm> terms = new ArrayList<>(userTerms.size());
         for (Project.ProjectDescr.UserTerm userTerm : userTerms) {
             UserTerm term = new UserTerm();
             term.setCategory(userTerm.getCategory());
             term.setTerm(userTerm.getTerm());
             term.setUnits(userTerm.getUnits());
             term.setValue(userTerm.getValue());
-            terms.add(term);
+            project.addUserTerm(term);
         }
-        project.setUserTerms(terms);
     }
 
     public void addGrants(BioProject project, List<Project.ProjectDescr.Grant> grants) {
-        List<Grant> projectGrants = new ArrayList<>(grants.size());
         for (Project.ProjectDescr.Grant grant : grants) {
             Grant projectGrant = new Grant();
             projectGrant.setAgencyName(grant.getAgency().getValue());
             projectGrant.setAgencyAbbr(grant.getAgency().getAbbr());
             projectGrant.setGrantId(grant.getGrantId());
             projectGrant.setTitle(grant.getTitle());
-            projectGrants.add(projectGrant);
+            project.addGrant(projectGrant);
         }
-        project.setGrants(projectGrants);
     }
 
     public void addDescription(BioProject project, Project.ProjectDescr descr) {

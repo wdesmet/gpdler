@@ -2,6 +2,8 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Root of the domain model based on bioproject XML. In the serialization
@@ -33,19 +35,19 @@ public class BioProject {
 
     private String description;
 
-    private Collection<ProjectRelevance> projectRelevance;
+    private Set<ProjectRelevance> projectRelevance = new HashSet<>();
 
-    private Collection<String> locusTagPrefixes;
+    private Set<String> locusTagPrefixes = new HashSet<>();
 
-    private Collection<Publication> publications;
+    private Set<Publication> publications = new HashSet<>();
 
-    private Collection<ExternalLink> externalLinks;
+    private Set<ExternalLink> externalLinks = new HashSet<>();
 
-    private Collection<DBXref> crossReferences;
+    private Set<DBXref> crossReferences = new HashSet<>();
 
-    private Collection<UserTerm> userTerms;
+    private Set<UserTerm> userTerms = new HashSet<>();
 
-    private Collection<Grant> grants;
+    private Set<Grant> grants = new HashSet<>();
 
     // always one organism per project, no matter the type
     private Organism organism;
@@ -99,67 +101,97 @@ public class BioProject {
         this.description = description;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Collection<ProjectRelevance> getProjectRelevance() {
+    @OneToMany(mappedBy = "bioProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<ProjectRelevance> getProjectRelevance() {
         return projectRelevance;
     }
 
-    public void setProjectRelevance(Collection<ProjectRelevance> projectRelevance) {
+    protected void setProjectRelevance(Set<ProjectRelevance> projectRelevance) {
         this.projectRelevance = projectRelevance;
     }
 
+    public void addProjectRelevance(ProjectRelevance relevance) {
+        relevance.setBioProject(this);
+        this.getProjectRelevance().add(relevance);
+    }
+
     @ElementCollection
-    public Collection<String> getLocusTagPrefixes() {
+    public Set<String> getLocusTagPrefixes() {
         return locusTagPrefixes;
     }
 
-    public void setLocusTagPrefixes(Collection<String> locusTagPrefixes) {
+    public void setLocusTagPrefixes(Set<String> locusTagPrefixes) {
         this.locusTagPrefixes = locusTagPrefixes;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Collection<Publication> getPublications() {
+    @OneToMany(mappedBy = "bioProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<Publication> getPublications() {
         return publications;
     }
 
-    public void setPublications(Collection<Publication> publications) {
+    protected void setPublications(Set<Publication> publications) {
         this.publications = publications;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Collection<ExternalLink> getExternalLinks() {
+    public void addPublication(Publication publication) {
+        publication.setBioProject(this);
+        this.getPublications().add(publication);
+    }
+
+    @OneToMany(mappedBy = "bioProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<ExternalLink> getExternalLinks() {
         return externalLinks;
     }
 
-    public void setExternalLinks(Collection<ExternalLink> externalLinks) {
+    protected void setExternalLinks(Set<ExternalLink> externalLinks) {
         this.externalLinks = externalLinks;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Collection<DBXref> getCrossReferences() {
+    public void addExternalLink(ExternalLink link) {
+        link.setBioProject(this);
+        getExternalLinks().add(link);
+    }
+
+    @OneToMany(mappedBy = "bioProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<DBXref> getCrossReferences() {
         return crossReferences;
     }
 
-    public void setCrossReferences(Collection<DBXref> crossReferences) {
+    protected void setCrossReferences(Set<DBXref> crossReferences) {
         this.crossReferences = crossReferences;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Collection<UserTerm> getUserTerms() {
+    public void addDBXref(DBXref xref) {
+        xref.setBioProject(this);
+        this.getCrossReferences().add(xref);
+    }
+
+    @OneToMany(mappedBy = "bioProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<UserTerm> getUserTerms() {
         return userTerms;
     }
 
-    public void setUserTerms(Collection<UserTerm> userTerms) {
+    protected void setUserTerms(Set<UserTerm> userTerms) {
         this.userTerms = userTerms;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public Collection<Grant> getGrants() {
+    public void addUserTerm(UserTerm term) {
+        term.setBioProject(this);
+        this.getUserTerms().add(term);
+    }
+
+    @OneToMany(mappedBy = "bioProject", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<Grant> getGrants() {
         return grants;
     }
 
-    public void setGrants(Collection<Grant> grants) {
+    protected void setGrants(Set<Grant> grants) {
         this.grants = grants;
+    }
+
+    public void addGrant(Grant grant) {
+        grant.setBioProject(this);
+        this.getGrants().add(grant);
     }
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)

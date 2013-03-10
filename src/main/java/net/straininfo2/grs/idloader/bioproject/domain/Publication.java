@@ -45,6 +45,8 @@ public class Publication {
 
     private List<Author> authors;
 
+    private BioProject bioProject;
+
     public enum PublicationDB {
         ePMC,
         ePubmed,
@@ -132,7 +134,7 @@ public class Publication {
         this.pagesTo = pagesTo;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "publication", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Author> getAuthors() {
         return authors;
     }
@@ -173,4 +175,12 @@ public class Publication {
         this.publicationStatus = publicationStatus;
     }
 
+    @ManyToOne(optional = false)
+    public BioProject getBioProject() {
+        return bioProject;
+    }
+
+    public void setBioProject(BioProject bioProject) {
+        this.bioProject = bioProject;
+    }
 }

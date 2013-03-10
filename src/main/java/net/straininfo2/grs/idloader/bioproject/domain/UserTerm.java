@@ -3,6 +3,7 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class UserTerm {
@@ -16,6 +17,8 @@ public class UserTerm {
     private String category;
 
     private String units;
+
+    private BioProject bioProject;
 
     @Id
     @GeneratedValue
@@ -57,5 +60,14 @@ public class UserTerm {
 
     public void setUnits(String units) {
         this.units = units;
+    }
+
+    @ManyToOne(optional = false)
+    public BioProject getBioProject() {
+        return bioProject;
+    }
+
+    public void setBioProject(BioProject bioProject) {
+        this.bioProject = bioProject;
     }
 }

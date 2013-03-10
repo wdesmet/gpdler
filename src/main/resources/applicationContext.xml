@@ -45,6 +45,7 @@
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                <prop key="hibernate.id.new_generator_mappings">true</prop>
             </props>
         </property>
         <!-- we use hibernate annotations to (hopefully) get everything configured -->

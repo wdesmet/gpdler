@@ -3,7 +3,18 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
+/**
+ * Models a publication-associated author.
+ *
+ * The author is not modeled as independent of the publication, since there
+ * is no real way to deduplicate authors: authors might well have the same
+ * name, but be different authors.
+ *
+ * Could be slightly improved by modeling the consortium separately, but it
+ * is not really necessary here, since this information is seldom supplied.
+ */
 @Entity
 public class Author {
 
@@ -18,6 +29,8 @@ public class Author {
     private String suffix;
 
     private String consortium;
+
+    private Publication publication;
 
     @Id
     @GeneratedValue
@@ -69,4 +82,12 @@ public class Author {
         this.consortium = consortium;
     }
 
+    @ManyToOne(optional = false)
+    public Publication getPublication() {
+        return publication;
+    }
+
+    public void setPublication(Publication publication) {
+        this.publication = publication;
+    }
 }
