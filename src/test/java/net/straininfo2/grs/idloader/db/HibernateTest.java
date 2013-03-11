@@ -1,6 +1,7 @@
 package net.straininfo2.grs.idloader.db;
 
 import net.straininfo2.grs.idloader.IntegrationTest;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.junit.Test;
@@ -24,6 +25,9 @@ public class HibernateTest {
     @Autowired
     Configuration configuration;
 
+    @Autowired
+    SessionFactory factory;
+
     @Test
     public void testHibernateConfigInjection() {
         assertNotNull(configuration);
@@ -40,5 +44,10 @@ public class HibernateTest {
         export.setOutputFile("grs-schema.sql");
         export.setDelimiter(";");
         export.execute(false, false, false, true);
+    }
+
+    @Test
+    public void tryLoadingBioProjectFile() {
+        BioProjectLoader loader = new BioProjectLoader()
     }
 }

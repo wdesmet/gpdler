@@ -2,9 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 	<!-- Commons DBCP configuration -->
 	<!-- First: a connection factory that creates the connections to the database -->
     <!--
@@ -41,6 +43,8 @@
         <property name="dataSource" ref="xmlDataSource" />
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
+    <tx:annotation-driven transaction-manager="xmltransactionManager" />
+
     <!-- A hibernate session factory, can be used elsewhere -->
     <bean id="parentSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" abstract="true">
         <property name="dataSource" ref="xmlDataSource"/>
