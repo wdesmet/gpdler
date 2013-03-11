@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader;
 
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

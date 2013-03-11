@@ -1,5 +1,7 @@
 package net.straininfo2.grs.idloader;
 
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import org.junit.Test;
 
 import java.util.ArrayList;

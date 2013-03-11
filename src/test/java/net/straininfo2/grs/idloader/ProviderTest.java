@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader;
 
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import org.junit.Before;
 import org.junit.Test;
 
