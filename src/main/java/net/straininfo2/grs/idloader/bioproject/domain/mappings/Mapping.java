@@ -3,10 +3,7 @@ package net.straininfo2.grs.idloader.bioproject.domain.mappings;
 import net.straininfo2.grs.idloader.TargetIdExtractor;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -68,14 +65,17 @@ public class Mapping implements Serializable {
         this.id = id;
     }
 
+    @Column(length = 1024)
     public String getUrl() {
         return url;
     }
 
+    @Column(length = 128)
     public String getSubjectType() {
         return subjectType;
     }
 
+    @Column(length = 128)
     public String getLinkName() {
         return linkName;
     }
@@ -90,6 +90,7 @@ public class Mapping implements Serializable {
         return provider;
     }
 
+    @Column(length = 64)
     public String getTargetId() {
         return targetId;
     }

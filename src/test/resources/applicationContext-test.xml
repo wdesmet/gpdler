@@ -6,6 +6,9 @@
            http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
     <import resource="classpath:applicationContext.xml"/>
     <!-- replace the normal database with an embedded one -->
-    <jdbc:embedded-database type="H2" id="xmlDataSource" />
+    <jdbc:embedded-database type="H2" id="xmlDataSource">
+        <!-- duplicated because of the override -->
+        <jdbc:script location="classpath:dbschema.sql" />
+    </jdbc:embedded-database>
     <bean id="hibernateConfiguration" factory-bean="&amp;sessionFactory" factory-method="getConfiguration"/>
 </beans>

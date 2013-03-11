@@ -1,9 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Grant {
@@ -38,6 +35,7 @@ public class Grant {
         this.title = title;
     }
 
+    @Column(length = 35)
     public String getAgencyName() {
         return agencyName;
     }
@@ -46,6 +44,7 @@ public class Grant {
         this.agencyName = agencyName;
     }
 
+    @Column(length = 20)
     public String getAgencyAbbr() {
         return agencyAbbr;
     }
@@ -54,6 +53,7 @@ public class Grant {
         this.agencyAbbr = agencyAbbr;
     }
 
+    @Column(length = 20)
     public String getGrantId() {
         return grantId;
     }

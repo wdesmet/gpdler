@@ -1,10 +1,7 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class DBXref extends Link {
@@ -15,6 +12,7 @@ public class DBXref extends Link {
 
     private BioProject bioProject;
 
+    @Column(length = 32)
     public String getDb() {
         return db;
     }
@@ -28,6 +26,7 @@ public class DBXref extends Link {
      *
      * @return
      */
+    @Column(length = 128)
     public String getDbId() {
         return dbId;
     }

@@ -70,6 +70,7 @@ public class Publication {
         this.id = id;
     }
 
+    @Lob
     public String getFreeFormCitation() {
         return freeFormCitation;
     }
@@ -94,6 +95,7 @@ public class Publication {
         this.journalTitle = journalTitle;
     }
 
+    @Column(length = 10)
     public String getYear() {
         return year;
     }
@@ -102,6 +104,7 @@ public class Publication {
         this.year = year;
     }
 
+    @Column(length = 10)
     public String getVolume() {
         return volume;
     }
@@ -110,6 +113,7 @@ public class Publication {
         this.volume = volume;
     }
 
+    @Column(length = 10)
     public String getIssue() {
         return issue;
     }
@@ -118,6 +122,7 @@ public class Publication {
         this.issue = issue;
     }
 
+    @Column(length = 10)
     public String getPagesFrom() {
         return pagesFrom;
     }
@@ -126,6 +131,7 @@ public class Publication {
         this.pagesFrom = pagesFrom;
     }
 
+    @Column(length = 10)
     public String getPagesTo() {
         return pagesTo;
     }

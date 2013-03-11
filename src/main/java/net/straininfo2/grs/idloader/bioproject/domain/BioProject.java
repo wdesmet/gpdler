@@ -3,7 +3,7 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.sql.Clob;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,6 +65,7 @@ public class BioProject {
         this.projectId = projectId;
     }
 
+    @Column(length = 20)
     public String getAccession() {
         return accession;
     }
@@ -97,6 +98,7 @@ public class BioProject {
         this.title = title;
     }
 
+    @Lob
     public String getDescription() {
         return description;
     }
@@ -120,6 +122,7 @@ public class BioProject {
     }
 
     @ElementCollection
+    @Column(length = 10)
     public Set<String> getLocusTagPrefixes() {
         return locusTagPrefixes;
     }

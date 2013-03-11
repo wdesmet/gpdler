@@ -1,9 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Models a publication-associated author.
@@ -42,6 +39,7 @@ public class Author {
         this.id = id;
     }
 
+    @Column(length = 35)
     public String getFirstName() {
         return firstName;
     }
@@ -50,6 +48,7 @@ public class Author {
         this.firstName = firstName;
     }
 
+    @Column(length = 65)
     public String getLastName() {
         return lastName;
     }
@@ -58,6 +57,7 @@ public class Author {
         this.lastName = lastName;
     }
 
+    @Column(length = 35)
     public String getMiddleName() {
         return middleName;
     }
@@ -66,6 +66,7 @@ public class Author {
         this.middleName = middleName;
     }
 
+    @Column(length = 35)
     public String getSuffix() {
         return suffix;
     }

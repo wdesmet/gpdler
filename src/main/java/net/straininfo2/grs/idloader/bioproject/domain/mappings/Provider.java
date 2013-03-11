@@ -1,9 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain.mappings;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -20,7 +17,7 @@ public class Provider implements Serializable {
 
     private Set<Mapping> mappings;
 	
-	public Provider(String name, String abbr, int id, String url) {
+	public Provider(String name, String abbr, long id, String url) {
 		this.setName(name);
 		this.setAbbr(abbr);
 		this.setId(id);
@@ -30,7 +27,8 @@ public class Provider implements Serializable {
     public Provider() {
 
     }
-	
+
+    @Column(length = 128)
 	public String getName() {
 		return name;
 	}
@@ -39,6 +37,7 @@ public class Provider implements Serializable {
         this.name = name;
     }
 
+    @Column(length = 32)
     public String getAbbr() {
 		return abbr;
 	}
@@ -56,6 +55,7 @@ public class Provider implements Serializable {
         this.id = id;
     }
 
+    @Column(length = 1024)
     public String getUrl() {
 		return url;
 	}

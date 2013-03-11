@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -13,6 +14,7 @@ public class ExternalLink extends Link {
 
     private BioProject bioProject;
 
+    @Column(length = 1024)
     public String getUrl() {
         return url;
     }

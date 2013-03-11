@@ -685,4 +685,5 @@ public abstract class ProjectInfoLoader {
                         "SELECT COUNT(*) FROM " + table + " WHERE proj_id=?",
                         projectId) == 0;
     }
+
 }

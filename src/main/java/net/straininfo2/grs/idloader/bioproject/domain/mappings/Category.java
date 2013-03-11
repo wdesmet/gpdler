@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain.mappings;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class Category implements Serializable {
     }
 
     @Id
+    @Column(length = 64)
     public String getName() {
         return name;
     }

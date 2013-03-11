@@ -1,9 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  * Possible fields in which a project can be relevant.
@@ -25,6 +22,7 @@ public class ProjectRelevance {
 
     private RelevantField relevantField;
 
+    @Column(length = 255)
     private String relevanceDescription;
 
     private BioProject bioProject;
