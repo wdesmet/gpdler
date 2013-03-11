@@ -1,6 +1,7 @@
 package net.straininfo2.grs.idloader;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ public class LoaderTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void testConstruction() {
         Loader l = new ClassPathXmlApplicationContext("classpath:applicationContext.xml").getBean(Loader.class);
     }

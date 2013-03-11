@@ -39,7 +39,7 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
     <jdbc:initialize-database data-source="xmlDataSource">
-        <jdbc:script location="classpath:dbschema.sql" />
+        <jdbc:script location="classpath:dbschema2.sql" />
     </jdbc:initialize-database>
     <!-- A straight up hibernate session factory, can be used elsewhere -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
