@@ -1,6 +1,9 @@
 package net.straininfo2.grs.idloader.db;
 
 import net.straininfo2.grs.idloader.*;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Category;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;

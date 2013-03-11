@@ -1,5 +1,8 @@
 package net.straininfo2.grs.idloader;
 
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Category;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,8 +155,8 @@ public class EutilsXmlParser {
      * @param stream
      *            xml event stream pointing to an ncbi linkout file right before
      *            ObjUrl
-     * @return a single {@link net.straininfo2.grs.idloader.Mapping}, pointing to a URL and a particular
-     *         {@link net.straininfo2.grs.idloader.Provider}
+     * @return a single {@link net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping}, pointing to a URL and a particular
+     *         {@link net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider}
      * @throws javax.xml.stream.XMLStreamException
      */
     public Mapping parseObjUrlMapping(XMLEventReader stream)

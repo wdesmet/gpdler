@@ -1,5 +1,7 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
@@ -48,6 +50,8 @@ public class BioProject {
     private Set<UserTerm> userTerms = new HashSet<>();
 
     private Set<Grant> grants = new HashSet<>();
+
+    private Set<Mapping> mappings;
 
     // always one organism per project, no matter the type
     private Organism organism;
@@ -201,6 +205,16 @@ public class BioProject {
 
     public void setOrganism(Organism organism) {
         this.organism = organism;
+    }
+
+    // optional, but must be deleted if the project is deleted!
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bioProject")
+    public Set<Mapping> getMappings() {
+        return mappings;
+    }
+
+    public void setMappings(Set<Mapping> mappings) {
+        this.mappings = mappings;
     }
 
 }

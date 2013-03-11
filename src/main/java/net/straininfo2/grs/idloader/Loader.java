@@ -6,6 +6,8 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import net.straininfo2.grs.idloader.db.MappingDbLoader;
 import net.straininfo2.grs.idloader.db.ProjectInfoLoader;
 import org.apache.commons.net.ftp.FTPClient;

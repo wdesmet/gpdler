@@ -1,12 +1,19 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.domain.mappings;
 
+import net.straininfo2.grs.idloader.TargetIdExtractor;
+import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * One mapping associated with a particular project identifier. Each project
+ * One mapping associated with a particular BioProject. Each project
  * is related to a number of mappings. This is a simple value class storing
  * the particular details of such a mapping, most importantly the url and link
  * name.
@@ -14,37 +21,58 @@ import java.util.Set;
  * @see Provider
  * @see net.straininfo2.grs.idloader.db.ProjectInfoLoader
  */
-public final class Mapping implements Serializable {
+@Entity
+public class Mapping implements Serializable {
 
-    private final String url;
+    private long id;
 
-    private final String subjectType;
+    private String url;
 
-    private final String linkName;
+    private String subjectType;
 
-    private final Category category;
+    private String linkName;
 
-    private final Provider provider;
+    private Category category;
+
+    private Provider provider;
 
     private String targetId;
 
+    private BioProject bioProject;
+
     public Mapping(String url, String subjectType, String linkName, Category category, Provider provider) {
         assert url != null;
-        this.url = url;
-        this.subjectType = subjectType;
-        this.linkName = linkName;
-        this.category = category;
-        this.provider = provider;
+        this.setUrl(url);
+        this.setSubjectType(subjectType);
+        this.setLinkName(linkName);
+        this.setCategory(category);
+        this.setProvider(provider);
     }
 
     public Mapping(String url, String subjectType, String linkName, String targetId, Category category, Provider provider) {
         this(url, subjectType, linkName, category, provider);
-        this.targetId = targetId;
+        this.setTargetId(targetId);
+    }
+
+    public Mapping() {
+
+    }
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUrl() {
         return url;
     }
+
+
 
     public String getSubjectType() {
         return subjectType;
@@ -54,10 +82,12 @@ public final class Mapping implements Serializable {
         return linkName;
     }
 
+    @ManyToOne
     public Category getCategory() {
         return category;
     }
 
+    @ManyToOne(optional = false)
     public Provider getProvider() {
         return provider;
     }
@@ -67,7 +97,36 @@ public final class Mapping implements Serializable {
     }
 
     public void computeTargetId(TargetIdExtractor extractor) {
-        this.targetId = extractor.extractTargetId(this.getUrl());
+        this.setTargetId(extractor.extractTargetId(this.getUrl()));
+    }
+
+    @ManyToOne(optional = false)
+    public BioProject getBioProject() {
+        return bioProject;
+    }
+
+    public void setBioProject(BioProject bioProject) {
+        this.bioProject = bioProject;
+    }
+
+    public void setSubjectType(String subjectType) {
+        this.subjectType = subjectType;
+    }
+
+    public void setLinkName(String linkName) {
+        this.linkName = linkName;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 
     /**
@@ -113,7 +172,7 @@ public final class Mapping implements Serializable {
 
     @Override
     public String toString() {
-        return linkName == null ? url : linkName;
+        return this.getLinkName() == null ? this.getUrl() : this.getLinkName();
     }
 
     @Override
@@ -123,12 +182,12 @@ public final class Mapping implements Serializable {
         }
         if (o instanceof Mapping) {
             Mapping other = (Mapping)o;
-            return (this.url == null ? other.url == null : this.url.equals(other.url)) &&
-                    (this.subjectType == null ? other.subjectType == null : this.subjectType.equals(other.subjectType)) &&
-                    (this.linkName == null ? other.linkName == null : this.linkName.equals(other.linkName)) &&
-                    (this.category == null ? other.category == null : this.category.equals(other.category)) &&
-                    (this.provider == null ? other.provider == null : this.provider.equals(other.provider)) &&
-                    (this.targetId == null ? other.targetId == null : this.targetId.equals(other.targetId));
+            return (this.getUrl() == null ? other.getUrl() == null : this.getUrl().equals(other.getUrl())) &&
+                    (this.getSubjectType() == null ? other.getSubjectType() == null : this.getSubjectType().equals(other.getSubjectType())) &&
+                    (this.getLinkName() == null ? other.getLinkName() == null : this.getLinkName().equals(other.getLinkName())) &&
+                    (this.getCategory() == null ? other.getCategory() == null : this.getCategory().equals(other.getCategory())) &&
+                    (this.getProvider() == null ? other.getProvider() == null : this.getProvider().equals(other.getProvider())) &&
+                    (this.getTargetId() == null ? other.getTargetId() == null : this.getTargetId().equals(other.getTargetId()));
         }
         else {
             return false;
@@ -149,7 +208,12 @@ public final class Mapping implements Serializable {
 
     @Override
     public int hashCode() {
-        return computeCode(this.url, this.subjectType,
-                this.linkName, this.category, this.provider);
+        return computeCode(this.getUrl(), this.getSubjectType(),
+                this.getLinkName(), this.getCategory(), this.getProvider());
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }

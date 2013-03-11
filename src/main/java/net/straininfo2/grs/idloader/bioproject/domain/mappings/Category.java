@@ -1,5 +1,7 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.domain.mappings;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -9,15 +11,26 @@ import java.io.Serializable;
  *
  * @see Mapping
  */
+@Entity
 public class Category implements Serializable {
-    final String name;
+
+    private String name;
 
     public Category(String name) {
         this.name = name;
     }
 
+    public Category() {
+
+    }
+
+    @Id
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -33,7 +46,7 @@ public class Category implements Serializable {
         }
         else {
             return o instanceof Category &&
-                    this.name.equals(((Category) o).name);
+                    this.getName().equals(((Category) o).getName());
         }
     }
 
@@ -46,4 +59,5 @@ public class Category implements Serializable {
     public int hashCode() {
         return getName().hashCode();
     }
+
 }
