@@ -39,6 +39,6 @@ public class HibernateTest {
         SchemaExport export = new SchemaExport(configuration);
         export.setOutputFile("grs-schema.sql");
         export.setDelimiter(";");
-        export.execute(true, false, false, true);
+        export.execute(false, false, false, true);
     }
 }

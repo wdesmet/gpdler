@@ -26,6 +26,9 @@
 		<property name="username" value="${grs.username}" />
 		<property name="password" value="${grs.password}" />
 	</bean>
+    <jdbc:initialize-database data-source="xmlDataSource">
+        <jdbc:script location="classpath:dbschema.sql" />
+    </jdbc:initialize-database>
     <bean id="xmlDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="url" value="${grs.newdb.dburl}" />
         <property name="username" value="${grs.newdb.username}" />
@@ -38,11 +41,8 @@
         <property name="dataSource" ref="xmlDataSource" />
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
-    <jdbc:initialize-database data-source="xmlDataSource">
-        <jdbc:script location="classpath:dbschema2.sql" />
-    </jdbc:initialize-database>
-    <!-- A straight up hibernate session factory, can be used elsewhere -->
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <!-- A hibernate session factory, can be used elsewhere -->
+    <bean id="parentSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" abstract="true">
         <property name="dataSource" ref="xmlDataSource"/>
         <property name="hibernateProperties">
             <props>
@@ -56,6 +56,7 @@
         <!-- we use hibernate/JPA annotations to (hopefully) get everything configured -->
         <property name="packagesToScan" value="net.straininfo2.grs.idloader.bioproject.domain,net.straininfo2.grs.idloader.bioproject.domain.mappings" />
     </bean>
+    <bean id="sessionFactory" parent="parentSessionFactory" />
     <!-- hibernateConfiguration is a Configuration object, can be used to dump the config -->
     <!-- Collection class storing categories and providers, based on their name -->
     <bean id="catMap" class="java.util.concurrent.ConcurrentHashMap" />
