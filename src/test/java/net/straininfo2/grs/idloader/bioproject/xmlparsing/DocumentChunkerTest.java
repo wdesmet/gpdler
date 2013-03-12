@@ -23,24 +23,20 @@ public class DocumentChunkerTest {
      */
     public static List<TypePackage> parseBioProjectFile() throws
             JAXBException, SAXException, ParserConfigurationException, IOException {
-        JAXBContext context = JAXBContext.newInstance(TypePackage.class);
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XMLReader reader = factory.newSAXParser().getXMLReader();
+
         final List<TypePackage> packageList = new LinkedList<>();
-        DocumentChunker chunker = new DocumentChunker(context, new PackageProcessor() {
+        PackageProcessor processor = new PackageProcessor() {
             @Override
             public void processPackage(TypePackage nextPackage) {
                 packageList.add(nextPackage);
             }
-        });
-        reader.setContentHandler(chunker);
+        };
         URL xmlUrl = DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml");
         if (xmlUrl == null) {
             throw new RuntimeException("Unable to fetch bioproject.xml");
         }
         else {
-            reader.parse(xmlUrl.toExternalForm());
+            DocumentChunker.parseXmlFile(xmlUrl, processor);
             return packageList;
         }
     }

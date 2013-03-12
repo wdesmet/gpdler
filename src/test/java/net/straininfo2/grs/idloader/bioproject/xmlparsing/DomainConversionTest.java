@@ -95,8 +95,8 @@ public class DomainConversionTest {
     @Test
     public void testOrganismConversion() throws Exception {
         converter.addTypeSpecificInformation(project, retrieveBorreliaProject().getProjectType());
-        assertEquals(Boolean.FALSE, project.getOrganism().getMorphology().getMotility());
-        assertTrue(project.getOrganism().getEnvironment().getOxygenReq() == OrganismEnvironment.OxygenReq.eMicroaerophilic);
+        assertEquals(Boolean.FALSE, project.retrieveOrganism().getMorphology().getMotility());
+        assertTrue(project.retrieveOrganism().getEnvironment().getOxygenReq() == OrganismEnvironment.OxygenReq.eMicroaerophilic);
     }
 
 }

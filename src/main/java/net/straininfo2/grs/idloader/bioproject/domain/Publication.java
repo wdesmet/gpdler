@@ -2,7 +2,7 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 
 import javax.persistence.*;
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ public class Publication {
 
     private String pagesTo;
 
-    private List<Author> authors;
+    private List<Author> authors = new LinkedList<>();
 
     private BioProject bioProject;
 
@@ -145,8 +145,13 @@ public class Publication {
         return authors;
     }
 
-    public void setAuthors(List<Author> authors) {
+    protected void setAuthors(List<Author> authors) {
         this.authors = authors;
+    }
+
+    public void addAuthor(Author author) {
+        author.setPublication(this);
+        this.getAuthors().add(author);
     }
 
     public PublicationDB getDbType() {

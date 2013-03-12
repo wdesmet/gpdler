@@ -84,6 +84,7 @@
         <property name="categoryMap" ref="catMap" />
         <property name="providerMap" ref="provMap" />
     </bean>
+    <bean id="bioProjectLoader" class="net.straininfo2.grs.idloader.db.BioProjectLoader" />
 	<bean id="loader" class="net.straininfo2.grs.idloader.Loader">
 		<property name="mappingDbLoader" ref="${grs.database}MappingDbLoader" />
 		<property name="projectInfoLoader" ref="${grs.database}ProjInfoLoader" />

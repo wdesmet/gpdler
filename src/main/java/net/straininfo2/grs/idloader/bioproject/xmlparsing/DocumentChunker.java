@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
@@ -15,6 +16,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.UnmarshallerHandler;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -165,6 +170,22 @@ public class DocumentChunker extends XMLFilterImpl {
         for (TypePackage nextPackage : nPackages) {
             processor.processPackage(nextPackage);
         }
+    }
+
+    /**
+     * Creates a document chunker and uses it to parse the file pointed to by
+     * the supplied URL.
+     */
+    public static void parseXmlFile(URL xmlUrl, PackageProcessor processor) throws JAXBException, ParserConfigurationException, SAXException, IOException {
+        assert processor != null;
+
+        JAXBContext context = JAXBContext.newInstance(TypePackage.class);
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XMLReader reader = factory.newSAXParser().getXMLReader();
+        DocumentChunker chunker = new DocumentChunker(context, processor);
+        reader.setContentHandler(chunker);
+        reader.parse(xmlUrl.toExternalForm());
     }
 
 }

@@ -3,8 +3,9 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 
 import javax.persistence.*;
-import java.sql.Clob;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -54,7 +55,7 @@ public class BioProject {
     private Set<Mapping> mappings;
 
     // always one organism per project, no matter the type
-    private Organism organism;
+    private List<Organism> organism = new ArrayList<>();
 
     @Id
     public long getProjectId() {
@@ -201,13 +202,34 @@ public class BioProject {
         this.getGrants().add(grant);
     }
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
-    public Organism getOrganism() {
+    /*
+    Used a OneToMany here because orphan removal doesn't work with a OneToOne
+    (or at least not the way you'd expect, making you set the property to null
+    to get it to remove, which won't work if you're merging two objects).
+    Organism doesn't use this approach for its own OneToOne relatiosn, but we
+    fixup after loading with some queries that find orphans. They don't cause
+    any problems, just take up space in the database. And possibly cause foreign
+    key constraint violations.
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bioProject", orphanRemoval = true)
+    protected List<Organism> getOrganism() {
         return organism;
     }
 
-    public void setOrganism(Organism organism) {
+    protected void setOrganism(List<Organism> organism) {
         this.organism = organism;
+    }
+
+    //@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+    public Organism retrieveOrganism() {
+        return this.getOrganism().isEmpty() ? null : organism.get(0);
+    }
+
+    public void updateOrganism(Organism organism) {
+        List<Organism> list = new ArrayList<>();
+        list.add(organism);
+        organism.setBioProject(this);
+        this.setOrganism(list);
     }
 
     // optional, but must be deleted if the project is deleted!

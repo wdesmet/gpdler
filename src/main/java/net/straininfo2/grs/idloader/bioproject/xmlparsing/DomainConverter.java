@@ -148,7 +148,6 @@ public class DomainConverter implements PackageProcessor {
                 publication.setVolume(journal.getVolume());
                 publication.setYear(journal.getYear());
                 if (citation.getAuthorSet() != null) {
-                    List<Author> dAuthors = new ArrayList<>(citation.getAuthorSet().getAuthors().size());
                     for (TypePublication.StructuredCitation.AuthorSet.Author author : citation.getAuthorSet().getAuthors()) {
                         Author dAuthor = new Author();
                         dAuthor.setConsortium(author.getConsortium());
@@ -156,9 +155,8 @@ public class DomainConverter implements PackageProcessor {
                         dAuthor.setMiddleName(author.getName().getMiddle());
                         dAuthor.setLastName(author.getName().getLast());
                         dAuthor.setSuffix(author.getName().getSuffix());
-                        dAuthors.add(dAuthor);
+                        publication.addAuthor(dAuthor);
                     }
-                    publication.setAuthors(dAuthors);
                 }
             }
             project.addPublication(publication);
@@ -321,7 +319,7 @@ public class DomainConverter implements PackageProcessor {
         if (organismData.getBiologicalProperties() != null) {
             addBiologicalProperties(organism, organismData.getBiologicalProperties());
         }
-        project.setOrganism(organism);
+        project.updateOrganism(organism);
     }
 
     public void addTypeSpecificInformation(BioProject project, Project.ProjectType type) {

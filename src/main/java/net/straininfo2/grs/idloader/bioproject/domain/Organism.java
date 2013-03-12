@@ -41,6 +41,8 @@ public class Organism {
 
     private OrganismSample sample;
 
+    private BioProject bioProject;
+
     @Id
     @GeneratedValue
     public long getId() {
@@ -193,6 +195,30 @@ public class Organism {
 
     public void setSample(OrganismSample sample) {
         this.sample = sample;
+    }
+
+    @ManyToOne(optional = false)
+    public BioProject getBioProject() {
+        return bioProject;
+    }
+
+    public void setBioProject(BioProject bioProject) {
+        this.bioProject = bioProject;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Organism)) {
+            return false;
+        }
+        else {
+            return getId() == ((Organism)o).getId();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return (int)getId();
     }
 
 }

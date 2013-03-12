@@ -1,14 +1,14 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * Superclass for external links. All links have a category and label in
  * common.
  */
-@Entity
+@MappedSuperclass
 public class Link {
 
     private long id;

@@ -1,18 +1,31 @@
 package net.straininfo2.grs.idloader.db;
 
 import net.straininfo2.grs.idloader.IntegrationTest;
+import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
+import net.straininfo2.grs.idloader.bioproject.domain.Organism;
+import net.straininfo2.grs.idloader.bioproject.xmlparsing.DocumentChunker;
+import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter;
+import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainHandler;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.xml.sax.SAXException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import javax.annotation.Resource;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Try to get hibernate working in this test.
@@ -27,6 +40,9 @@ public class HibernateTest {
 
     @Autowired
     SessionFactory factory;
+
+    @Resource(name="bioProjectLoader")
+    DomainHandler projectLoader;
 
     @Test
     public void testHibernateConfigInjection() {
@@ -47,7 +63,46 @@ public class HibernateTest {
     }
 
     @Test
-    public void tryLoadingBioProjectFile() {
-        BioProjectLoader loader = new BioProjectLoader()
+    public void tryLoadingBioProjectFile() throws ParserConfigurationException, IOException, SAXException, JAXBException {
+        DocumentChunker.parseXmlFile(this.getClass().getClassLoader().getResource("bioproject.xml"), new DomainConverter(projectLoader));
+        assertEquals(4L, factory.openSession().createQuery("select count(*) from BioProject").uniqueResult());
+    }
+
+    @Test
+    public void testMergeBehaviour() {
+        BioProject pr1 = new BioProject();
+        Organism org = new Organism();
+        org.setLabel("Some organism");
+        pr1.updateOrganism(org);
+        pr1.setProjectId(1L);
+        // this is what spring does automatically with @Transactional
+        Session session = factory.openSession();
+        session.save(pr1);
+        session.flush();// normally done by the transaction closing
+        session.close();
+        session = factory.openSession();
+        BioProject pr2 = new BioProject();
+        pr2.setProjectId(1L);
+        org = new Organism();
+        org.setLabel("Another organism");
+        pr2.updateOrganism(org);
+        session.merge(pr2);
+        session.flush();
+        session.close();
+        session = factory.openSession();
+        BioProject pr3 = (BioProject)session.get(BioProject.class, 1L);
+        assertEquals("Another organism", pr3.retrieveOrganism().getLabel());
+        assertEquals(1, (long) session.createQuery("select count(*) from Organism").uniqueResult());
+        session.close();
+    }
+
+    @After
+    public void clearDatabase() {
+        Session session = factory.openSession();
+        for (BioProject project : (List<BioProject>)session.createQuery("from BioProject").list()) {
+            session.delete(project);
+        }
+        session.flush();
+        session.close();
     }
 }

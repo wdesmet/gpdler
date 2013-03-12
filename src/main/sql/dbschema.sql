@@ -20,9 +20,7 @@
         title varchar(255),
         descriptionOther varchar(255),
         subType integer,
-        organism_id bigint not null,
-        primary key (projectId),
-        unique (organism_id)
+        primary key (projectId)
     );
 
     create table if not exists BioProject_locusTagPrefixes (
@@ -45,14 +43,21 @@
         primary key (id)
     );
 
-    create table if not exists Link (
-        DTYPE varchar(31) not null,
+    create table if not exists DBXref (
+        id bigint not null,
+        category varchar(255),
+        label varchar(255),
+        db varchar(32),
+        dbId varchar(128),
+        bioProject_projectId bigint not null,
+        primary key (id)
+    );
+
+    create table if not exists ExternalLink (
         id bigint not null,
         category varchar(255),
         label varchar(255),
         url varchar(1024),
-        db varchar(32),
-        dbId varchar(128),
         bioProject_projectId bigint not null,
         primary key (id)
     );
@@ -88,6 +93,7 @@
         morphology_id bigint,
         phenotype_id bigint,
         sample_id bigint,
+        bioProject_projectId bigint not null,
         primary key (id)
     );
 
@@ -176,82 +182,87 @@
     );
 
     alter table Author
-        add constraint if not exists FK75920DAB96FF7083
+        add constraint if not exists AUTHORPUB
         foreign key (publication_id)
         references Publication;
 
-    alter table BioProject
-        add constraint if not exists FK266C0911320076D1
-        foreign key (organism_id)
-        references Organism;
+    alter table Organism
+        add constraint if not exists ORGANISMPROJ
+        foreign key (bioProject_projectId)
+        references BioProject;
 
     alter table BioProject_locusTagPrefixes
-        add constraint if not exists FKD555592A2D65A5CE
+        add constraint if not exists LOCUSTAGPROJ
         foreign key (BioProject_projectId)
         references BioProject;
 
     alter table Grant
-        add constraint if not exists FK41DD0FC2D65A5CE
+        add constraint if not exists GRANTPROJ
         foreign key (bioProject_projectId)
         references BioProject;
 
-    alter table Link
-        add constraint if not exists FK24241A2D65A5CE
+    alter table DBXref 
+        add constraint if not exists XREFPROJ 
+        foreign key (bioProject_projectId) 
+        references BioProject;
+
+    alter table ExternalLink 
+        add constraint if not exists ELINKPROJ 
+        foreign key (bioProject_projectId) 
+        references BioProject;
+
+    alter table Mapping
+        add constraint if not exists MAPPINGPROJ
         foreign key (bioProject_projectId)
         references BioProject;
 
     alter table Mapping
-        add constraint if not exists FK9524B0AE2D65A5CE
-        foreign key (bioProject_projectId)
-        references BioProject;
-
-    alter table Mapping
-        add constraint if not exists FK9524B0AE60AE1C5C
+        add constraint if not exists MAPPINGCAT
         foreign key (category_name)
         references Category;
 
     alter table Mapping
-        add constraint if not exists FK9524B0AE89B05A4C
+        add constraint if not exists MAPPINGPROV
         foreign key (provider_id)
         references Provider;
 
     alter table Organism
-        add constraint if not exists FK5250E4F2614C89F1
+        add constraint if not exists ORGANISMENV
         foreign key (environment_id)
         references OrganismEnvironment;
 
     alter table Organism
-        add constraint if not exists FK5250E4F29871E843
+        add constraint if not exists ORGANISMMORPH
         foreign key (morphology_id)
         references OrganismMorphology;
 
     alter table Organism
-        add constraint if not exists FK5250E4F27903AF91
+        add constraint if not exists ORGANISMPHENO
         foreign key (phenotype_id)
         references OrganismPhenotype;
 
     alter table Organism
-        add constraint if not exists FK5250E4F2D901D203
+        add constraint if not exists ORGANISMSAMPLE
         foreign key (sample_id)
         references OrganismSample;
 
     alter table OrganismMorphology_shapes
-        add constraint if not exists FK61302D23267ACCB1
+        add constraint if not exists ORGANISMSHAPE
         foreign key (OrganismMorphology_id)
         references OrganismMorphology;
 
     alter table ProjectRelevance
-        add constraint if not exists FKFF6DB4602D65A5CE
+        add constraint if not exists RELEVPROJ
         foreign key (bioProject_projectId)
         references BioProject;
 
     alter table Publication
-        add constraint if not exists FK23254A0C2D65A5CE
+        add constraint if not exists PUBPROJ
         foreign key (bioProject_projectId)
         references BioProject;
 
     alter table UserTerm
-        add constraint if not exists FKF3F82AF72D65A5CE
+        add constraint if not exists TERMPROJ
         foreign key (bioProject_projectId)
         references BioProject;
 
