@@ -47,7 +47,6 @@ public class HibernateTest {
     @Test
     public void testHibernateConfigInjection() {
         assertNotNull(configuration);
-        assertTrue(configuration instanceof Configuration);
     }
 
     /*
@@ -97,6 +96,7 @@ public class HibernateTest {
     }
 
     @After
+    @SuppressWarnings("unchecked")
     public void clearDatabase() {
         Session session = factory.openSession();
         for (BioProject project : (List<BioProject>)session.createQuery("from BioProject").list()) {

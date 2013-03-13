@@ -23,7 +23,7 @@ published).
 
 If you just want to use this download the data and do your own database
 loading you can either extend the existing functionality or take a look at the
-code in `net.straininfo2.grs.idloader.DumpTest`.
+code in `net.straininfo2.grs.idloader.bioproject.eutils.DumpTest`.
 
 Known Issues
 ------------

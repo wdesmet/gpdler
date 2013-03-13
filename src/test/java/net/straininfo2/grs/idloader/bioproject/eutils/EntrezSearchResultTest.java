@@ -1,4 +1,4 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.eutils;
 
 import org.junit.Test;
 

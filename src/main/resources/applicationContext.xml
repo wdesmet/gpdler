@@ -23,22 +23,16 @@
         </property>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
     </bean>
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="url" value="${grs.dburl}" />
-		<property name="username" value="${grs.username}" />
-		<property name="password" value="${grs.password}" />
-	</bean>
+
+    <!-- Database configured by properties files -->
+    <bean id="xmlDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="url" value="${grs.db.dburl}" />
+        <property name="username" value="${grs.db.username}" />
+        <property name="password" value="${grs.db.password}" />
+    </bean>
     <jdbc:initialize-database data-source="xmlDataSource">
         <jdbc:script location="classpath:dbschema.sql" />
     </jdbc:initialize-database>
-    <bean id="xmlDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="url" value="${grs.newdb.dburl}" />
-        <property name="username" value="${grs.newdb.username}" />
-        <property name="password" value="${grs.newdb.password}" />
-    </bean>
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
     <bean id="xmltransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="dataSource" ref="xmlDataSource" />
         <property name="sessionFactory" ref="sessionFactory" />
@@ -65,32 +59,20 @@
     <!-- Collection class storing categories and providers, based on their name -->
     <bean id="catMap" class="java.util.concurrent.ConcurrentHashMap" />
     <bean id="provMap" class="java.util.concurrent.ConcurrentHashMap" />
-	<!-- DB loader classes, which use datasource and transaction manager to manage DB access -->
-	<bean id="mappingDbLoader" class="net.straininfo2.grs.idloader.MappingDbLoader" abstract="true">
-		<property name="dataSource" ref="dataSource" />
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="namespace" value="${grs.namespace}" />
-	</bean>
-    <bean id="projInfoLoader" class="net.straininfo2.grs.idloader.db.ProjectInfoLoader" abstract="true">
-        <property name="dataSource" ref="dataSource" />
-        <property name="transactionManager" ref="transactionManager" />
-        <property name="namespace" value="${grs.namespace}" />
-    </bean>
-    <bean id="derbyMappingDbLoader" class="net.straininfo2.grs.idloader.db.DerbyMappingDbLoader" parent="mappingDbLoader" />
-    <bean id="derbyProjInfoLoader" class="net.straininfo2.grs.idloader.db.DerbyProjectInfoLoader" parent="projInfoLoader" />
-    <bean id="oracleMappingDbLoader" class="net.straininfo2.grs.idloader.db.OracleMappingDbLoader" parent="mappingDbLoader" />
-    <bean id="oracleProjInfoLoader" class="net.straininfo2.grs.idloader.db.OracleProjectInfoLoader" parent="projInfoLoader" />
-    <bean id="xmlParser" class="net.straininfo2.grs.idloader.EutilsXmlParser">
+    <!-- XML parsing -->
+    <bean id="xmlParser" class="net.straininfo2.grs.idloader.bioproject.eutils.EutilsXmlParser">
         <property name="categoryMap" ref="catMap" />
         <property name="providerMap" ref="provMap" />
     </bean>
     <bean id="bioProjectLoader" class="net.straininfo2.grs.idloader.db.BioProjectLoader" />
-	<bean id="loader" class="net.straininfo2.grs.idloader.Loader">
-		<property name="mappingDbLoader" ref="${grs.database}MappingDbLoader" />
-		<property name="projectInfoLoader" ref="${grs.database}ProjInfoLoader" />
-		<property name="email" value="${grs.email}" />
+    <bean id="mappingHandler" class="net.straininfo2.grs.idloader.db.MappingLoader" />
+    <bean id="downloader" class="net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader">
         <property name="xmlParser" ref="xmlParser" />
         <property name="readTimeout" value="${grs.readTimeout}" />
         <property name="connectTimeout" value="${grs.connectTimeout}" />
+        <property name="email" value="${grs.email}" />
+    </bean>
+	<bean id="loader" class="net.straininfo2.grs.idloader.Loader">
+        <property name="downloader" ref="downloader" />
 	</bean>
 </beans>

@@ -1,9 +1,12 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.eutils;
 
 import com.sun.jersey.api.client.Client;
+import net.straininfo2.grs.idloader.Loader;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Category;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
+import net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader;
+import net.straininfo2.grs.idloader.bioproject.eutils.EutilsXmlParser;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
@@ -25,12 +28,12 @@ public class DumpTest {
      * @throws XMLStreamException
      */
     public static void main(String[] args) throws XMLStreamException {
-        Loader loader = new Loader();
-        loader.setXmlParser(new EutilsXmlParser());
+        EutilsDownloader downloader = new EutilsDownloader();
+        downloader.setXmlParser(new EutilsXmlParser());
         Client client = Client.create();
-        Map<Integer, List<Mapping>> mappings = loader.createMapping(
-                loader.downLoadIds(loader.createEutilsSearchResource(client)),
-                loader.createEutilsLinkResource(client)
+        Map<Integer, List<Mapping>> mappings = downloader.createMapping(
+                downloader.downLoadIds(downloader.createEutilsSearchResource(client)),
+                downloader.createEutilsLinkResource(client)
         );
         // save this to file
         try {

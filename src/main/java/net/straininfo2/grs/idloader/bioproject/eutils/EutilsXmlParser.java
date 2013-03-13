@@ -1,5 +1,6 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.eutils;
 
+import net.straininfo2.grs.idloader.Loader;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Category;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
@@ -50,7 +51,7 @@ public class EutilsXmlParser {
         this.providerMap = providerMap;
     }
 
-    List<Mapping> parseMapping(InputStream xml) throws XMLStreamException {
+    public List<Mapping> parseMapping(InputStream xml) throws XMLStreamException {
         XMLEventReader stream = factory.createXMLEventReader(xml);
         List<Mapping> mappings = new LinkedList<Mapping>();
         logger.debug("Stream acquired, parsing");

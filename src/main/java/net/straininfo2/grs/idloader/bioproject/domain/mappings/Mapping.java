@@ -5,6 +5,7 @@ import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -155,7 +156,7 @@ public class Mapping implements Serializable {
      * @return true if the lists contain different mappings (possibly in different order)
      * @throws NullPointerException if either of the mapping lists are null
      */
-    public static boolean differentMapping(List<Mapping> current, List<Mapping> other) {
+    public static boolean differentMapping(Collection<Mapping> current, Collection<Mapping> other) {
         if (current.size() != other.size()) {
             return true; // heuristic helper
         }

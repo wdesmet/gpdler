@@ -3,12 +3,9 @@ package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -48,4 +45,5 @@ public class DocumentChunkerTest {
     public void parseBioProjectXml() throws Exception {
         assertEquals(4, parseBioProjectFile().size());
     }
+
 }

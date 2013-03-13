@@ -8,22 +8,27 @@ import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
-import net.straininfo2.grs.idloader.db.MappingDbLoader;
-import net.straininfo2.grs.idloader.db.ProjectInfoLoader;
-import org.apache.commons.net.ftp.FTPClient;
+import net.straininfo2.grs.idloader.bioproject.eutils.EntrezSearchResult;
+import net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader;
+import net.straininfo2.grs.idloader.bioproject.eutils.EutilsXmlParser;
+import net.straininfo2.grs.idloader.bioproject.eutils.MappingHandler;
+import net.straininfo2.grs.idloader.bioproject.xmlparsing.DocumentChunker;
+import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter;
+import net.straininfo2.grs.idloader.bioproject.xmlparsing.PackageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.xml.sax.SAXException;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,81 +44,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Loader {
 
-    public final static String EUTILS_URL = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
-
-    public final static String GENOMEPRJ_FTP_URL = "ftp://ftp.ncbi.nih.gov/genomes/genomeprj/";
+    public final static String GENOMEPRJ_FTP_URL = "ftp://ftp.ncbi.nlm.nih.gov/bioproject/";
 
     private final static Logger logger = LoggerFactory.getLogger(Loader.class);
 
-    /**
-     * Number of ids queried per request (as controlled by retMax parameter).
-     *
-     * If this is lower than the nr of ids in the database, multiple requests
-     * will be made to get the full list. At the time of writing, 20k was enough
-     * to get everything in one request. The code to get stuff in multiple
-     * requests was tested as well and Should Work(TM).
-     */
-    public final static int NUM_PER_REQUEST = 20000;
-
-    private static final int MAX_ERRORS = 3;  /* maximum nr of errors per item hit */
-
-    // timeouts (in ms), set to null if you want infinity
-    private Integer connectTimeout;
-
-    private Integer readTimeout;
-
-    private MappingDbLoader dbLoader;
-
-    private ProjectInfoLoader projLoader;
-
-    private EutilsXmlParser xmlParser;
-
-    /**
-     * Email address passed to the eutils as identification. Eutils work without it,
-     * but it allows eutils admins to contact you in case of problems (say you
-     * accidentally ddos them by running 400 copies of this code on a cluster).
-     */
-    private String email;
+    private EutilsDownloader downloader;
 
     public Loader() {
     }
 
-    /* getters and setters */
-
-    public Integer getConnectTimeout() {
-        return connectTimeout;
+    public EutilsDownloader getDownloader() {
+        return downloader;
     }
 
-    public void setConnectTimeout(Integer connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public Integer getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(Integer readTimeout) {
-        this.readTimeout = readTimeout;
-    }
-
-    public void setMappingDbLoader(MappingDbLoader dbLoader) {
-        this.dbLoader = dbLoader;
-    }
-
-    public void setProjectInfoLoader(ProjectInfoLoader projLoader) {
-        this.projLoader = projLoader;
-    }
-
-    public void setXmlParser(EutilsXmlParser xmlParser) {
-        this.xmlParser = xmlParser;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDownloader(EutilsDownloader downloader) {
+        this.downloader = downloader;
     }
 
     public static void main(String[] args) throws XMLStreamException,
@@ -123,7 +68,8 @@ public class Loader {
         Loader loader = ctx.getBean(Loader.class);
         loader.checkEmailWasSet();
         try {
-            loader.downloadAndLoadData();
+            loader.loadProjectInformation(ctx.getBean(DomainConverter.class));
+            loader.loadMappings(ctx.getBean(MappingHandler.class));
         } catch (Exception e) {
             logger.error("Exception thrown but not caught during loading, exiting", e);
             System.exit(1);
@@ -131,39 +77,34 @@ public class Loader {
         logger.debug("Finished loading, main thread exiting");
     }
 
-    public void downloadAndLoadData() throws XMLStreamException {
-        loadProjectInformation();
-        loadUrls();
-    }
-
-    public void loadUrls() throws XMLStreamException, FactoryConfigurationError {
-        dbLoader.configureTables();
-        Client client = Client.create();
-        client.addFilter(new GZIPContentEncodingFilter());
-        // set timeouts, the NCBI servers tend to do a lot of that
-        client.setReadTimeout(getReadTimeout());
-        client.setConnectTimeout(getConnectTimeout());
-        WebResource search = createEutilsSearchResource(client);
-        // add info to be used by NCBI should there be a problem
-        search = search.queryParam("tool", "grs_loader").queryParam("email",
-                email);
-        List<Integer> ids = this.downLoadIds(search);
-        logger.debug("Downloaded {} ids", ids.size());
-        WebResource link = createEutilsLinkResource(client);
-        link = link.queryParam("tool", "grs_loader").queryParam("email",
-                email);
-        Map<Integer, List<Mapping>> grs = this.createMapping(ids, link);
+    public void loadMappings(MappingHandler handler) throws XMLStreamException, FactoryConfigurationError {
+        Map<Integer, List<Mapping>> grs = downloader.downloadAllMappings();
         Map<Provider, TargetIdExtractor> extractors = constructExtractors(grs);
-        dbLoader.updateIfChanged(grs, extractors);
+        for (Map.Entry<Integer, List<Mapping>> mappingList : grs.entrySet()) {
+            handler.handleMappings(mappingList.getKey().longValue(), mappingList.getValue(), extractors);
+        }
     }
 
-    void checkEmailWasSet() {
+    public void loadProjectInformation(PackageProcessor processor) {
+        try {
+            URL uri = new URL(new URL(GENOMEPRJ_FTP_URL), "bioproject.xml");
+            DocumentChunker.parseXmlFile(uri, processor);
+        } catch (MalformedURLException e) {
+            logger.error("Malformed URI supplied {}", e);
+        } catch (ParserConfigurationException | SAXException | JAXBException e) {
+            logger.error("Could not start XML parser {}", e);
+        } catch (IOException e) {
+            logger.error("Could not connect to Bioproject FTP site {}", e);
+        }
+    }
+
+    protected void checkEmailWasSet() {
         Properties p = new Properties();
         try {
             p.load(this.getClass().getClassLoader().getResourceAsStream("grsloader.default.properties"));
             String defaultEmail = null;
             if ((defaultEmail = p.getProperty("grs.email")) != null) {
-                if (email.equalsIgnoreCase(defaultEmail)) {
+                if (downloader.getEmail().equalsIgnoreCase(defaultEmail)) {
                     logger.debug("Set email is equal to default {}", defaultEmail);
                     throw new RuntimeException("Error: you need to set an email address (-Dgrs.email=...)");
                 }
@@ -173,47 +114,6 @@ public class Loader {
             }
         } catch (IOException e) {
             throw new RuntimeException("Could not find default properties file.", e);
-        }
-    }
-
-    WebResource createEutilsLinkResource(Client client) {
-        return client.resource(EUTILS_URL + "elink.fcgi").
-                queryParam("dbfrom", "bioproject").
-                queryParam("cmd", "llinks");
-    }
-
-    WebResource createEutilsSearchResource(Client client) {
-        return client.resource(EUTILS_URL + "esearch.fcgi");
-    }
-
-    public void loadProjectInformation() {
-        try {
-            projLoader.configureTables();
-            logger.debug("Fetching project information files from FTP");
-            FTPClient client = new FTPClient();
-            try {
-                URI uri = new URI(GENOMEPRJ_FTP_URL);
-                client.connect(uri.getHost());
-                client.setFileType(FTPClient.BINARY_FILE_TYPE);
-                client.enterLocalPassiveMode();
-                logger.debug("Connecting to {}, returned {}", uri.getHost(),
-                        client.getReplyCode());
-                client.login("anonymous", email);
-                logger.debug("Logging in, returned {}", client.getReplyCode());
-                logger.debug("Changing working directory to {}", uri.getPath());
-                client.changeWorkingDirectory(uri.getPath());
-                logger.debug("CWD returned {}", client.getReplyString());
-                parseFtpFiles(client);
-            } finally {
-                client.logout();
-                client.disconnect();
-            }
-        } catch (URISyntaxException e) {
-            logger.error("Malformed URI supplied {}", GENOMEPRJ_FTP_URL);
-            e.printStackTrace();
-        } catch (IOException io) {
-            logger.error("Problem connecting to FTP server");
-            io.printStackTrace();
         }
     }
 
@@ -310,148 +210,6 @@ public class Loader {
             extractors.put(provider, dummy);
         }
         return extractors;
-    }
-
-    public Map<Integer, List<Mapping>> createMapping(List<Integer> ids,
-                                                     WebResource source) throws XMLStreamException {
-        Map<Integer, List<Mapping>> result = new HashMap<Integer, List<Mapping>>();
-        logger.info("Creating mapping from source {}", source);
-        TokenBucket barrier = new TokenBucket(3); // 3 requests per second
-        int count = 0;
-        long starttime = System.currentTimeMillis();
-        try {
-            for (Integer i : ids) {
-                try {
-                    logger.debug("Waiting for barrier");
-                    barrier.take();
-                    count++;
-                    if (count % 10 == 0) {
-                        logger.debug("Average rate of requests: "
-                                + count
-                                / ((System.currentTimeMillis() - starttime) / 1000.0));
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(
-                            "Unexpected interruption in barrier", e);
-                }
-                InputStream xml = downloadMapping(source, i);
-                if (xml != null) {
-                    List<Mapping> mappings = xmlParser.parseMapping(xml);
-                    result.put(i, mappings);
-                } else {
-                    logger.warn(
-                            "Could not download information for project ID {}!",
-                            i);
-                }
-            }
-        } finally {
-            barrier.stop();
-        }
-        logger.debug("Returning mapping");
-        return result;
-    }
-
-    /**
-     * Downloads a LinkOut mapping using eutils. This expects the web resource
-     * parameter to be configured to use the eutils llinks command with appropiate
-     * parameters for the requested database.
-     *
-     * @param source web resource pointing to an appropiate eutils URL
-     * @param i identifier of the requested elemented ("id=" in the eutils url)
-     * @return InputStream for the returned XML from eutils
-     */
-    InputStream downloadMapping(WebResource source, Integer i) {
-        logger.info("Downloading mapping for id {}.", i);
-        InputStream xml = null;
-        for (int errors = 0; errors < MAX_ERRORS; errors++) {
-            try {
-                xml = source.queryParam("id", i.toString()).get(
-                        InputStream.class);
-                break; /* only stay in loop if an error occurs */
-            } catch (ClientHandlerException e) {
-                logger.warn("Exception while downloading: {}", e.getCause().getMessage());
-                logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);
-            }
-        }
-        return xml;
-    }
-
-    public List<Integer> downLoadIds(WebResource source)
-            throws UniformInterfaceException, XMLStreamException {
-        // this will fail with a run time exception should something go wrong
-        // As that is a fatal exception, we let it kill the program.
-        List<Integer> ids = new ArrayList<Integer>();
-        MultivaluedMap<String, String> params = new MultivaluedMapImpl();
-        params.add("db", "bioproject");
-        params.add("term", "all[filter]");
-        params.add("retmax", Integer.toString(NUM_PER_REQUEST));
-        logger.debug("Querying esearch using params {}.", params);
-        EntrezSearchResult curResult = xmlParser.parsePartialIds(source
-                .queryParams(params).get(InputStream.class));
-        addInts(ids, curResult.getIds());
-        int curStart = NUM_PER_REQUEST;
-        while (curResult.getRetStart() + curResult.getIds().length < curResult
-                .getCount()) {
-            params.putSingle("retstart", Integer.toString(curStart));
-            logger.debug("Querying using parameters: {}", params);
-            curResult = xmlParser.parsePartialIds(source.queryParams(params)
-                    .get(InputStream.class));
-            addInts(ids, curResult.getIds());
-            curStart = curStart + NUM_PER_REQUEST;
-        }
-        return ids;
-    }
-
-    public static void addInts(List<Integer> target, int[] source) {
-        for (int i : source) {
-            target.add(i);
-        }
-    }
-
-    private void parseFtpFiles(FTPClient client) {
-        try {
-            // stop checking date for now since it doesn't seem to work
-            Date lastUpdate = null;// loader.getLatestProkaryoteUpdate();
-            if (lastUpdate == null
-                    || client.listFiles("lproks_0.txt")[0].getTimestamp()
-                    .after(lastUpdate)) {
-
-                InputStream stream = client.retrieveFileStream("lproks_0.txt");
-                projLoader.updateProkaryotesMain(stream);
-                client.completePendingCommand();
-            }
-
-            if (lastUpdate == null
-                    || client.listFiles("lproks_1.txt")[0].getTimestamp()
-                    .after(lastUpdate)) {
-                InputStream stream = client.retrieveFileStream("lproks_1.txt");
-                projLoader.updateProkaryotesCompleted(stream);
-                client.completePendingCommand();
-            }
-
-            if (lastUpdate == null
-                    || client.listFiles("lproks_2.txt")[0].getTimestamp()
-                    .after(lastUpdate)) {
-                InputStream stream = client.retrieveFileStream("lproks_2.txt");
-                projLoader.updateProkaryotesInProgress(stream);
-                client.completePendingCommand();
-            }
-            //lastUpdate = projLoader.getLatestEukaryoteUpdate();
-            if (lastUpdate == null || client.listFiles("leuks.txt")[0].getTimestamp().after(lastUpdate)) {
-                InputStream stream = client.retrieveFileStream("leuks.txt");
-                projLoader.updateEukaryotes(stream);
-                client.completePendingCommand();
-            }
-
-            //lastUpdate = projLoader.getLatestEnvironmentalUpdate();
-            if (lastUpdate == null || client.listFiles("lenvs.txt")[0].getTimestamp().after(lastUpdate)) {
-                InputStream stream = client.retrieveFileStream("lenvs.txt");
-                projLoader.updateEnvironmentals(stream);
-                client.completePendingCommand();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static <E> E dedupKey(ConcurrentHashMap<E, E> map, E key) {

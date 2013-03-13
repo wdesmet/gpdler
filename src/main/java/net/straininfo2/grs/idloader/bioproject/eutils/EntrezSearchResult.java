@@ -1,10 +1,10 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.eutils;
 
 /**
 * Represents a result returned from Entrez Search. Identifiers can be added
  * iteratively by client code, but all parameters should be configured first.
 */
-class EntrezSearchResult {
+public class EntrezSearchResult {
 
     private int count;
 

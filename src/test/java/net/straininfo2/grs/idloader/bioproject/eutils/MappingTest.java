@@ -1,4 +1,4 @@
-package net.straininfo2.grs.idloader;
+package net.straininfo2.grs.idloader.bioproject.eutils;
 
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Category;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;

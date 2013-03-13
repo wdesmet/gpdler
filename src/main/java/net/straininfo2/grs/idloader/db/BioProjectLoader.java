@@ -11,6 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class BioProjectLoader implements DomainHandler {
 
+    // TODO: ADD CLEANUP OF ORGANISM ONE-TO-ONEs (elsewhere)
+    /*
+    OrganismMorphology
+    OrganismEnvironment
+    OrganismPhenotype
+    OrganismSample
+     */
     @Autowired
     SessionFactory sessionFactory;
 
