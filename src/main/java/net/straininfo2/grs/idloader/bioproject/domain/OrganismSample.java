@@ -17,7 +17,7 @@ public class OrganismSample {
     public enum CultureType {
         ePureCulture,
         eMixedCulture,
-        eUncultered;
+        eUncultered
     }
 
     private CultureType cultureSampleInfo;

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class MemoryBackedDomainHandler implements DomainHandler {
 
-    private List<BioProject> projectList = new LinkedList<>();
+    private final List<BioProject> projectList = new LinkedList<>();
 
     @Override
     public void processBioProject(BioProject project) {

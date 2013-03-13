@@ -1,36 +1,29 @@
 package net.straininfo2.grs.idloader;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
-import net.straininfo2.grs.idloader.bioproject.eutils.EntrezSearchResult;
 import net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader;
-import net.straininfo2.grs.idloader.bioproject.eutils.EutilsXmlParser;
 import net.straininfo2.grs.idloader.bioproject.eutils.MappingHandler;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DocumentChunker;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter;
-import net.straininfo2.grs.idloader.bioproject.xmlparsing.PackageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
-import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -50,6 +43,10 @@ public class Loader {
 
     private EutilsDownloader downloader;
 
+    private DomainConverter domainConverter;
+
+    private MappingHandler mappingHandler;
+
     public Loader() {
     }
 
@@ -61,6 +58,22 @@ public class Loader {
         this.downloader = downloader;
     }
 
+    public DomainConverter getDomainConverter() {
+        return domainConverter;
+    }
+
+    public void setDomainConverter(DomainConverter domainConverter) {
+        this.domainConverter = domainConverter;
+    }
+
+    public MappingHandler getMappingHandler() {
+        return mappingHandler;
+    }
+
+    public void setMappingHandler(MappingHandler mappingHandler) {
+        this.mappingHandler = mappingHandler;
+    }
+
     public static void main(String[] args) throws XMLStreamException,
             FactoryConfigurationError {
         ApplicationContext ctx = new ClassPathXmlApplicationContext(
@@ -68,8 +81,8 @@ public class Loader {
         Loader loader = ctx.getBean(Loader.class);
         loader.checkEmailWasSet();
         try {
-            loader.loadProjectInformation(ctx.getBean(DomainConverter.class));
-            loader.loadMappings(ctx.getBean(MappingHandler.class));
+            loader.loadProjectInformation();
+            loader.loadMappings();
         } catch (Exception e) {
             logger.error("Exception thrown but not caught during loading, exiting", e);
             System.exit(1);
@@ -77,18 +90,19 @@ public class Loader {
         logger.debug("Finished loading, main thread exiting");
     }
 
-    public void loadMappings(MappingHandler handler) throws XMLStreamException, FactoryConfigurationError {
+    public void loadMappings() throws XMLStreamException, FactoryConfigurationError {
         Map<Integer, List<Mapping>> grs = downloader.downloadAllMappings();
         Map<Provider, TargetIdExtractor> extractors = constructExtractors(grs);
         for (Map.Entry<Integer, List<Mapping>> mappingList : grs.entrySet()) {
-            handler.handleMappings(mappingList.getKey().longValue(), mappingList.getValue(), extractors);
+            mappingHandler.handleMappings(mappingList.getKey().longValue(), mappingList.getValue(), extractors);
         }
     }
 
-    public void loadProjectInformation(PackageProcessor processor) {
+    @Transactional
+    public void loadProjectInformation() {
         try {
             URL uri = new URL(new URL(GENOMEPRJ_FTP_URL), "bioproject.xml");
-            DocumentChunker.parseXmlFile(uri, processor);
+            DocumentChunker.parseXmlFile(uri, domainConverter);
         } catch (MalformedURLException e) {
             logger.error("Malformed URI supplied {}", e);
         } catch (ParserConfigurationException | SAXException | JAXBException e) {
@@ -102,7 +116,7 @@ public class Loader {
         Properties p = new Properties();
         try {
             p.load(this.getClass().getClassLoader().getResourceAsStream("grsloader.default.properties"));
-            String defaultEmail = null;
+            String defaultEmail;
             if ((defaultEmail = p.getProperty("grs.email")) != null) {
                 if (downloader.getEmail().equalsIgnoreCase(defaultEmail)) {
                     logger.debug("Set email is equal to default {}", defaultEmail);
@@ -166,8 +180,8 @@ public class Loader {
            * We need to find at least two URLs of each type to compare them. All
            * we do is find the first location in which they differ.
            */
-        Map<Provider, String> foundUrlList = new HashMap<Provider, String>();
-        Map<Provider, TargetIdExtractor> extractors = new HashMap<Provider, TargetIdExtractor>();
+        Map<Provider, String> foundUrlList = new HashMap<>();
+        Map<Provider, TargetIdExtractor> extractors = new HashMap<>();
         // used when we can't find a good differentiating point
         TargetIdExtractor dummy = new TargetIdExtractor(-1);
         for (List<Mapping> mappings : grs.values()) {

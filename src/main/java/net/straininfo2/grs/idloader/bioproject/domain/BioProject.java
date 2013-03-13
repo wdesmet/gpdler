@@ -123,7 +123,7 @@ public class BioProject {
     }
 
     @ElementCollection
-    @Column(length = 10)
+    @Column(length = 32)
     public Set<String> getLocusTagPrefixes() {
         return locusTagPrefixes;
     }

@@ -51,13 +51,13 @@ public class Publication {
         ePMC,
         ePubmed,
         eDOI,
-        eNotAvailable;
+        eNotAvailable
     }
 
     /* not mapped as a boolean, in case new fields are added later */
     public enum PublicationStatus {
         ePublished,
-        eUnpublished;
+        eUnpublished
     }
 
     @Id

@@ -6,5 +6,5 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 public enum Archive {
     NCBI,
     EBI,
-    DDBJ;
+    DDBJ
 }

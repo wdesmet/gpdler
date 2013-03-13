@@ -49,6 +49,14 @@ public class DomainConverter implements PackageProcessor {
         this.handler = handler;
     }
 
+    public DomainHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(DomainHandler handler) {
+        this.handler = handler;
+    }
+
     // Helper functions.
 
     /**
@@ -300,6 +308,9 @@ public class DomainConverter implements PackageProcessor {
     }
 
     public void addOrganismData(BioProject project, TypeOrganism organismData) {
+        if (organismData == null) {
+            return;
+        }
         Organism organism = new Organism();
         organism.setOrganismName(organismData.getOrganismName());
         organism.setLabel(organismData.getLabel());

@@ -33,13 +33,13 @@ public class DocumentChunker extends XMLFilterImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(DocumentChunker.class);
 
-    private JAXBContext context;
+    private final JAXBContext context;
 
     /* copied reference to locator to pass to unmarshaller, is in superclass */
     private Locator locator;
 
     /* Need to keep track of namespaces, to pass them to the unmarshaller */
-    private NamespaceSupport namespaceSupport = new NamespaceSupport();
+    private final NamespaceSupport namespaceSupport = new NamespaceSupport();
 
     /* Actual unmarshaller, starts empty */
     private UnmarshallerHandler handler = null;
@@ -49,7 +49,7 @@ public class DocumentChunker extends XMLFilterImpl {
     private String packageSetQName;
     private Attributes packageSetAttributes;
 
-    private PackageProcessor processor;
+    private final PackageProcessor processor;
 
     public DocumentChunker (JAXBContext context) {
         this(context, new PackageProcessor() {

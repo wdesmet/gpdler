@@ -23,7 +23,7 @@ public class OrganismMorphology {
 
     public enum Gram {
         eNegative,
-        ePositive;
+        ePositive
     }
 
     public enum Shape {
@@ -36,7 +36,7 @@ public class OrganismMorphology {
         eFusobacteria,
         eSquareShaped,
         eCurvedShaped,
-        eTailed;
+        eTailed
     }
 
     @Id

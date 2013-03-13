@@ -49,6 +49,7 @@
                 <prop key="hibernate.hbm2ddl.auto">validate</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
                 <prop key="hibernate.id.new_generator_mappings">true</prop>
+                <prop key="hibernate.jdbc.batch_size">50</prop>
             </props>
         </property>
         <!-- we use hibernate/JPA annotations to (hopefully) get everything configured -->
@@ -64,8 +65,12 @@
         <property name="categoryMap" ref="catMap" />
         <property name="providerMap" ref="provMap" />
     </bean>
-    <bean id="bioProjectLoader" class="net.straininfo2.grs.idloader.db.BioProjectLoader" />
     <bean id="mappingHandler" class="net.straininfo2.grs.idloader.db.MappingLoader" />
+    <bean id="domainConverter" class="net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter">
+        <property name="handler">
+            <bean class="net.straininfo2.grs.idloader.db.BioProjectLoader" autowire="byType" />
+        </property>
+    </bean>
     <bean id="downloader" class="net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader">
         <property name="xmlParser" ref="xmlParser" />
         <property name="readTimeout" value="${grs.readTimeout}" />
@@ -74,5 +79,7 @@
     </bean>
 	<bean id="loader" class="net.straininfo2.grs.idloader.Loader">
         <property name="downloader" ref="downloader" />
+        <property name="domainConverter" ref="domainConverter" />
+        <property name="mappingHandler" ref="mappingHandler" />
 	</bean>
 </beans>

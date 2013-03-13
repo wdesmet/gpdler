@@ -25,7 +25,7 @@
 
     create table if not exists BioProject_locusTagPrefixes (
         BioProject_projectId bigint not null,
-        locusTagPrefixes varchar(10)
+        locusTagPrefixes varchar(32)
     );
 
     create table if not exists Category (
