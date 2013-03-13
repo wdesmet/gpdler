@@ -35,7 +35,7 @@ public class Grant {
         this.title = title;
     }
 
-    @Column(length = 35)
+    @Column(length = 64)
     public String getAgencyName() {
         return agencyName;
     }
