@@ -31,6 +31,10 @@ public class MemoryBackedDomainHandler implements DomainHandler {
         processBioProject(project);
     }
 
+    @Override
+    public void endParsing() {
+    }
+
     public List<BioProject> getProjectList() {
         return Collections.unmodifiableList(projectList);
     }

@@ -16,4 +16,9 @@ public interface DomainHandler {
 
     public void processSubmissionBioProject(SubmissionBioProject project);
 
+    /**
+     * Called when last project has been parsed and passed on.
+     */
+    public void endParsing();
+
 }

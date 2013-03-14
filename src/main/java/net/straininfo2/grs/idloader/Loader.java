@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
@@ -98,7 +97,6 @@ public class Loader {
         }
     }
 
-    @Transactional
     public void loadProjectInformation() {
         try {
             URL uri = new URL(new URL(GENOMEPRJ_FTP_URL), "bioproject.xml");

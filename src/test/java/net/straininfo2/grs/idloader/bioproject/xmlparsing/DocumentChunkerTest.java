@@ -12,8 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class DocumentChunkerTest {
+
+    private static URL getBioProjectUrl() {
+        return DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml");
+    }
 
     /**
      * Utility function that reads the bioproject XML into binding objects.
@@ -27,8 +32,12 @@ public class DocumentChunkerTest {
             public void processPackage(TypePackage nextPackage) {
                 packageList.add(nextPackage);
             }
+
+            @Override
+            public void endParsing() {
+            }
         };
-        URL xmlUrl = DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml");
+        URL xmlUrl = getBioProjectUrl();
         if (xmlUrl == null) {
             throw new RuntimeException("Unable to fetch bioproject.xml");
         }
@@ -44,6 +53,30 @@ public class DocumentChunkerTest {
     @Test
     public void parseBioProjectXml() throws Exception {
         assertEquals(4, parseBioProjectFile().size());
+    }
+
+    private static class ProcessEnd implements PackageProcessor {
+
+        private boolean done = false;
+
+        @Override
+        public void processPackage(TypePackage nextPackage) {
+        }
+
+        @Override
+        public void endParsing() {
+            done = true;
+        }
+
+        public boolean getDone() {
+            return done;
+        }
+    }
+    @Test
+    public void testEndOfParsing() throws ParserConfigurationException, IOException, SAXException, JAXBException {
+        ProcessEnd processor = new ProcessEnd();
+        DocumentChunker.parseXmlFile(getBioProjectUrl(), processor);
+        assertTrue(processor.getDone());
     }
 
 }

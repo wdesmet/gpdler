@@ -35,10 +35,10 @@
 
     create table if not exists Grant (
         id bigint not null,
-        agencyAbbr varchar(20),
-        agencyName varchar(64),
-        grantId varchar(20),
-        title varchar(255),
+        agencyAbbr varchar(64),
+        agencyName varchar(128),
+        grantId varchar(64),
+        title varchar(512),
         bioProject_projectId bigint not null,
         primary key (id)
     );
@@ -46,7 +46,7 @@
     create table if not exists DBXref (
         id bigint not null,
         category varchar(255),
-        label varchar(255),
+        label varchar(512),
         db varchar(32),
         dbId varchar(128),
         bioProject_projectId bigint not null,
@@ -56,7 +56,7 @@
     create table if not exists ExternalLink (
         id bigint not null,
         category varchar(255),
-        label varchar(255),
+        label varchar(512),
         url varchar(1024),
         bioProject_projectId bigint not null,
         primary key (id)

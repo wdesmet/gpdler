@@ -27,6 +27,7 @@ public class Grant {
         this.id = id;
     }
 
+    @Column(length = 512)
     public String getTitle() {
         return title;
     }
@@ -35,7 +36,7 @@ public class Grant {
         this.title = title;
     }
 
-    @Column(length = 64)
+    @Column(length = 128)
     public String getAgencyName() {
         return agencyName;
     }
@@ -44,7 +45,7 @@ public class Grant {
         this.agencyName = agencyName;
     }
 
-    @Column(length = 20)
+    @Column(length = 64)
     public String getAgencyAbbr() {
         return agencyAbbr;
     }
@@ -53,7 +54,7 @@ public class Grant {
         this.agencyAbbr = agencyAbbr;
     }
 
-    @Column(length = 20)
+    @Column(length = 64)
     public String getGrantId() {
         return grantId;
     }

@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -27,6 +28,7 @@ public class Link {
         this.id = id;
     }
 
+    @Column(length = 512)
     public String getLabel() {
         return label;
     }

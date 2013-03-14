@@ -11,4 +11,10 @@ import net.straininfo2.grs.idloader.bioproject.bindings.TypePackage;
 public interface PackageProcessor {
 
     public void processPackage(TypePackage nextPackage);
+
+    /**
+     * Called when last project has been parsed and passed on.
+     */
+    public void endParsing();
+
 }

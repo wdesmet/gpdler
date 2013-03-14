@@ -60,6 +60,11 @@ public class DocumentChunker extends XMLFilterImpl {
                 logger.debug("Received package with project: {}", nextPackage.getProject().getProject().getProjectDescr().getName());
             }
 
+            @Override
+            public void endParsing() {
+                logger.debug("Ended parsing");
+            }
+
         });
     }
 
@@ -162,6 +167,10 @@ public class DocumentChunker extends XMLFilterImpl {
             } finally {
                 this.handler = null;
             }
+        }
+        else if (name.equals("PackageSet")) {
+            //EOF
+            processor.endParsing();
         }
     }
 

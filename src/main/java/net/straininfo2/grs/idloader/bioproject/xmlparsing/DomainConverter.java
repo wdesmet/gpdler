@@ -42,6 +42,10 @@ public class DomainConverter implements PackageProcessor {
             @Override
             public void processSubmissionBioProject(SubmissionBioProject project) {
             }
+
+            @Override
+            public void endParsing() {
+            }
         };
     }
 
@@ -375,6 +379,11 @@ public class DomainConverter implements PackageProcessor {
             addCommonFields(project, xmlProject);
             handler.processBioProject(project);
         }
+    }
+
+    @Override
+    public void endParsing() {
+        handler.endParsing();
     }
 
     // TODO: test grant, user term, organism data
