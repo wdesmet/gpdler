@@ -33,6 +33,7 @@ public class MappingLoader implements MappingHandler {
             logger.error("Bioproject with id {} not found, cannot load mapping.", bioProjectId);
         }
         else {
+            logger.info("Saving mapping {} for bioproject {}", mapping.getLinkName(), bioProjectId);
             mapping.computeTargetId(extractor);
             project.getMappings().add(mapping);
             mapping.setBioProject(project);
@@ -48,6 +49,7 @@ public class MappingLoader implements MappingHandler {
             logger.error("Bioproject with id {} not found, cannot load mapping.", bioProjectId);
         }
         else {
+            logger.info("Saving mappings for bioproject {}", bioProjectId);
             for (Mapping mapping : mappings) {
                 mapping.computeTargetId(extractors.get(mapping.getProvider()));
                 mapping.setBioProject(project);
