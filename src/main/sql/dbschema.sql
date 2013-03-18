@@ -33,7 +33,7 @@
         primary key (name)
     );
 
-    create table if not exists Grant (
+    create table if not exists ProjectGrant (
         id bigint not null,
         agencyAbbr varchar(64),
         agencyName varchar(256),
@@ -196,7 +196,7 @@
         foreign key (BioProject_projectId)
         references BioProject;
 
-    alter table Grant
+    alter table ProjectGrant
         add constraint if not exists GRANTPROJ
         foreign key (bioProject_projectId)
         references BioProject;

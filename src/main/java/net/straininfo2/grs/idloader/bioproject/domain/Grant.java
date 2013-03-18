@@ -3,6 +3,7 @@ package net.straininfo2.grs.idloader.bioproject.domain;
 import javax.persistence.*;
 
 @Entity
+@Table(name="ProjectGrant")
 public class Grant {
 
     private long id;
