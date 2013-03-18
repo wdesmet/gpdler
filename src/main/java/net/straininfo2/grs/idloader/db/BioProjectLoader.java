@@ -50,9 +50,8 @@ public class BioProjectLoader implements DomainHandler {
             currentSession = sessionFactory.openSession();
             currentSession.beginTransaction();
         }
-        if (count % 100 == 0) {
+        if (count % 1000 == 0) {
             currentSession.getTransaction().commit();
-            currentSession.flush();
             currentSession.close();
             currentSession = sessionFactory.openSession();
             currentSession.beginTransaction();
@@ -66,24 +65,43 @@ public class BioProjectLoader implements DomainHandler {
         currentSession.merge(project);
     }
 
+    @SuppressWarnings("unchecked")
+    private BioProject loadCurrent(long id) {
+        return (BioProject)currentSession.get(BioProject.class, id);
+    }
+
     @Override
     public void processAdminBioProject(AdminBioProject project) {
         checkTransaction();
         logger.info("Saving project with ID {}", project.getProjectId());
-        currentSession.merge(project);
+        BioProject current = loadCurrent(project.getProjectId());
+        if (current != null && !(current instanceof AdminBioProject)) {
+            // sometimes projects change type, replace the entry
+            currentSession.delete(current);
+            currentSession.persist(project);
+        }
+        else{
+            currentSession.merge(project);
+        }
     }
 
     @Override
     public void processSubmissionBioProject(SubmissionBioProject project) {
         checkTransaction();
         logger.info("Saving project with ID {}", project.getProjectId());
-        currentSession.merge(project);
+        BioProject current = loadCurrent(project.getProjectId());
+        if (current != null && !(current instanceof SubmissionBioProject)) {
+            currentSession.delete(current);
+            currentSession.persist(project);
+        }
+        else{
+            currentSession.merge(project);
+        }
     }
 
     @Override
     public void endParsing() {
         currentSession.getTransaction().commit();
-        currentSession.flush();
         currentSession.close();
     }
 }
