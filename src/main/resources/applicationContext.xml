@@ -65,11 +65,10 @@
         <property name="categoryMap" ref="catMap" />
         <property name="providerMap" ref="provMap" />
     </bean>
-    <bean id="mappingHandler" class="net.straininfo2.grs.idloader.db.MappingLoader" />
+    <bean id="mappingHandler" class="net.straininfo2.grs.idloader.db.MappingLoader" autowire="byType" />
+    <bean id="bioProjectLoader" class="net.straininfo2.grs.idloader.db.BioProjectLoader" autowire="byType" />
     <bean id="domainConverter" class="net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter">
-        <property name="handler">
-            <bean class="net.straininfo2.grs.idloader.db.BioProjectLoader" autowire="byType" />
-        </property>
+        <property name="handler" ref="bioProjectLoader" />
     </bean>
     <bean id="downloader" class="net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader">
         <property name="xmlParser" ref="xmlParser" />

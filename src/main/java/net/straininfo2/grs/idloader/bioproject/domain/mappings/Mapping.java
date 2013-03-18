@@ -81,12 +81,12 @@ public class Mapping implements Serializable {
         return linkName;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     public Category getCategory() {
         return category;
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     public Provider getProvider() {
         return provider;
     }

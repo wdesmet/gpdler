@@ -1,8 +1,12 @@
 package net.straininfo2.grs.idloader.db;
 
 import net.straininfo2.grs.idloader.IntegrationTest;
+import net.straininfo2.grs.idloader.TargetIdExtractor;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.Organism;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
+import net.straininfo2.grs.idloader.bioproject.eutils.MappingHandler;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DocumentChunker;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainHandler;
@@ -43,6 +47,9 @@ public class HibernateTest {
 
     @Resource(name="bioProjectLoader")
     DomainHandler projectLoader;
+
+    @Resource(name="mappingHandler")
+    MappingHandler handler;
 
     @Test
     public void testHibernateConfigInjection() {
@@ -95,6 +102,26 @@ public class HibernateTest {
         session.close();
     }
 
+    @Test
+    public void testMappingSave() {
+        Session session = factory.openSession();
+        BioProject project = new BioProject();
+        project.setProjectId(1);
+        session.persist(project);
+        session.flush();
+        session.close();
+        Mapping mapping = new Mapping();
+        Provider provider = new Provider();
+        provider.setId(1);
+        mapping.setProvider(provider);
+        mapping.setUrl("http://example.org/");
+        handler.addMapping(1, mapping, new TargetIdExtractor(-1));
+        session = factory.openSession();
+        project = (BioProject) session.load(BioProject.class, 1L);
+        assertEquals("http://example.org/", project.getMappings().iterator().next().getUrl());
+        session.close();
+    }
+
     @After
     @SuppressWarnings("unchecked")
     public void clearDatabase() {
@@ -105,4 +132,5 @@ public class HibernateTest {
         session.flush();
         session.close();
     }
+
 }

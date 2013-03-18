@@ -35,6 +35,7 @@ public class MappingLoader implements MappingHandler {
         else {
             mapping.computeTargetId(extractor);
             project.getMappings().add(mapping);
+            mapping.setBioProject(project);
             session.merge(project);
         }
     }
@@ -49,6 +50,7 @@ public class MappingLoader implements MappingHandler {
         else {
             for (Mapping mapping : mappings) {
                 mapping.computeTargetId(extractors.get(mapping.getProvider()));
+                mapping.setBioProject(project);
             }
             if (Mapping.differentMapping(project.getMappings(), mappings)) {
                 // only do something if mappings changed
@@ -56,5 +58,13 @@ public class MappingLoader implements MappingHandler {
                 session.merge(project);
             }
         }
+    }
+
+    public SessionFactory getFactory() {
+        return factory;
+    }
+
+    public void setFactory(SessionFactory factory) {
+        this.factory = factory;
     }
 }
