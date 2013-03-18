@@ -17,7 +17,7 @@
         archive integer,
         description clob,
         name varchar(255),
-        title varchar(255),
+        title varchar(1024),
         descriptionOther varchar(255),
         subType integer,
         primary key (projectId)
@@ -36,7 +36,7 @@
     create table if not exists Grant (
         id bigint not null,
         agencyAbbr varchar(64),
-        agencyName varchar(128),
+        agencyName varchar(256),
         grantId varchar(64),
         title varchar(512),
         bioProject_projectId bigint not null,
