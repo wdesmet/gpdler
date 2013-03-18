@@ -58,16 +58,31 @@ public class BioProjectLoader implements DomainHandler {
         }
     }
 
-    @Override
-    public void processBioProject(BioProject project) {
-        checkTransaction();
-        logger.info("Saving project with ID {}", project.getProjectId());
-        currentSession.merge(project);
-    }
-
     @SuppressWarnings("unchecked")
     private BioProject loadCurrent(long id) {
         return (BioProject)currentSession.get(BioProject.class, id);
+    }
+
+    /**
+     * Copy mappings, if any, from the old project to the new one. This
+     * method is null-safe.
+     *
+     * @param old project to copy mappings from
+     * @param updated recipient of mappings
+     */
+    private static void copyMappings(BioProject old, BioProject updated) {
+        if (old != null && updated != null) {
+            updated.setMappings(old.getMappings());
+        }
+    }
+
+    @Override
+    public void processBioProject(BioProject project) {
+        checkTransaction();
+        BioProject current = loadCurrent(project.getProjectId());
+        copyMappings(current, project);
+        logger.info("Saving project with ID {}", project.getProjectId());
+        currentSession.merge(project);
     }
 
     @Override
@@ -75,6 +90,7 @@ public class BioProjectLoader implements DomainHandler {
         checkTransaction();
         logger.info("Saving project with ID {}", project.getProjectId());
         BioProject current = loadCurrent(project.getProjectId());
+        copyMappings(current, project);
         if (current != null && !(current instanceof AdminBioProject)) {
             // sometimes projects change type, replace the entry
             currentSession.delete(current);
@@ -90,6 +106,7 @@ public class BioProjectLoader implements DomainHandler {
         checkTransaction();
         logger.info("Saving project with ID {}", project.getProjectId());
         BioProject current = loadCurrent(project.getProjectId());
+        copyMappings(current, project);
         if (current != null && !(current instanceof SubmissionBioProject)) {
             currentSession.delete(current);
             currentSession.persist(project);
