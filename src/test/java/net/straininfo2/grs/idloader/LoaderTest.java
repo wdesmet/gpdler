@@ -27,6 +27,7 @@ public class LoaderTest {
     }
 
     @Test
+    @Category(IntegrationTest.class)
     public void loadIntoDb() throws ParserConfigurationException, IOException, SAXException, JAXBException {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         Loader l = ctx.getBean(Loader.class);
