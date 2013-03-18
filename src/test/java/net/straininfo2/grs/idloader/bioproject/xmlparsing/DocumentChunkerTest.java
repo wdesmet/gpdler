@@ -16,7 +16,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class DocumentChunkerTest {
 
-    private static URL getBioProjectUrl() {
+    public static URL getBioProjectUrl() {
         return DocumentChunkerTest.class.getClassLoader().getResource("bioproject.xml");
     }
 
