@@ -29,7 +29,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Try to get hibernate working in this test.
@@ -60,7 +61,7 @@ public class HibernateTest {
     This is not really a test, but it's a convenient way to generate an export of the
     schema.
      */
-    @Test
+    //@Test
     public void schemaExport() {
         SchemaExport export = new SchemaExport(configuration);
         export.setOutputFile("grs-schema.sql");
