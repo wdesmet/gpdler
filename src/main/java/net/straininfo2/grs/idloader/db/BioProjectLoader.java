@@ -50,11 +50,12 @@ public class BioProjectLoader implements DomainHandler {
             currentSession = sessionFactory.openSession();
             currentSession.beginTransaction();
         }
-        if (count % 1000 == 0) {
+        if (count % 10000 == 0) {
             currentSession.getTransaction().commit();
             currentSession.close();
             currentSession = sessionFactory.openSession();
             currentSession.beginTransaction();
+            count = 0;
         }
     }
 

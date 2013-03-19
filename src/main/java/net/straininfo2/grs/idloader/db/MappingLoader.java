@@ -33,10 +33,11 @@ public class MappingLoader implements MappingHandler {
             session = factory.openSession();
             session.beginTransaction();
         }
-        else if (count % 5000 == 0) {
+        else if (count % 10000 == 0) {
             session.getTransaction().commit();
             session.close();
             session = factory.openSession();
+            count = 0;
         }
     }
 
