@@ -116,6 +116,7 @@ public class HibernateTest {
         mapping.setProvider(provider);
         mapping.setUrl("http://example.org/");
         handler.addMapping(1, mapping, new TargetIdExtractor(-1));
+        handler.endLoading();
         session = factory.openSession();
         project = (BioProject) session.load(BioProject.class, 1L);
         assertEquals("http://example.org/", project.getMappings().iterator().next().getUrl());
