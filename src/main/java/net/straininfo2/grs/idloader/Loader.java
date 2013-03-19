@@ -95,6 +95,7 @@ public class Loader {
         for (Map.Entry<Integer, List<Mapping>> mappingList : grs.entrySet()) {
             mappingHandler.handleMappings(mappingList.getKey().longValue(), mappingList.getValue(), extractors);
         }
+        mappingHandler.endLoading();
     }
 
     public void loadProjectInformation() {

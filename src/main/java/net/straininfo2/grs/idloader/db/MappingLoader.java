@@ -16,17 +16,33 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
-@Transactional
 public class MappingLoader implements MappingHandler {
 
     @Autowired
     SessionFactory factory;
 
+    private Session session;
+
+    private long count = 0;
+
     private final static Logger logger = LoggerFactory.getLogger(MappingHandler.class);
+
+    private void checkTransaction() {
+        count++;
+        if (session == null) {
+            session = factory.openSession();
+            session.beginTransaction();
+        }
+        else if (count % 5000 == 0) {
+            session.getTransaction().commit();
+            session.close();
+            session = factory.openSession();
+        }
+    }
 
     @Override
     public void addMapping(long bioProjectId, Mapping mapping, TargetIdExtractor extractor) {
-        Session session = factory.getCurrentSession();
+        checkTransaction();
         BioProject project = (BioProject)session.get(BioProject.class, bioProjectId);
         if (project == null) {
             // this should not happen, as it should always be in the XML file, but trust no-one
@@ -43,7 +59,7 @@ public class MappingLoader implements MappingHandler {
 
     @Override
     public void handleMappings(long bioProjectId, Collection<Mapping> mappings, Map<Provider, TargetIdExtractor> extractors) {
-        Session session = factory.getCurrentSession();
+        checkTransaction();
         BioProject project = (BioProject)session.get(BioProject.class, bioProjectId);
         if (project == null) {
             logger.error("Bioproject with id {} not found, cannot load mapping.", bioProjectId);
@@ -59,6 +75,16 @@ public class MappingLoader implements MappingHandler {
                 project.setMappings(new HashSet<>(mappings));
                 session.merge(project);
             }
+        }
+    }
+
+    @Override
+    public void endLoading() {
+        try {
+            session.getTransaction().commit();
+            session.close();
+        } catch (NullPointerException e) {
+            // ignore, could happen if transaction already committed or no session yet (zero-input)
         }
     }
 

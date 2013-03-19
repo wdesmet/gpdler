@@ -118,7 +118,11 @@ public class BioProjectLoader implements DomainHandler {
 
     @Override
     public void endParsing() {
-        currentSession.getTransaction().commit();
-        currentSession.close();
+        try {
+            currentSession.getTransaction().commit();
+            currentSession.close();
+        } catch (NullPointerException e) {
+            // ignore, only happens when no input was given, which is exceptional
+        }
     }
 }

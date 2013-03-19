@@ -16,4 +16,6 @@ public interface MappingHandler {
     public void addMapping(long bioProjectId, Mapping mapping, TargetIdExtractor extractor);
 
     public void handleMappings(long bioProjectId, Collection<Mapping> mappings, Map<Provider, TargetIdExtractor> extractors);
+
+    public void endLoading();
 }
