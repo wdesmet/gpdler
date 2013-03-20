@@ -10,7 +10,6 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,6 +36,7 @@ public class MappingLoader implements MappingHandler {
             session.getTransaction().commit();
             session.close();
             session = factory.openSession();
+            session.beginTransaction();
             count = 0;
         }
     }
