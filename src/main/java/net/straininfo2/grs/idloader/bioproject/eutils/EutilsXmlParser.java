@@ -14,8 +14,10 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -51,11 +53,30 @@ public class EutilsXmlParser {
         this.providerMap = providerMap;
     }
 
-    public List<Mapping> parseMapping(InputStream xml) throws XMLStreamException {
+    public Map<Integer, List<Mapping>> parseMappings(InputStream xml) throws XMLStreamException {
         XMLEventReader stream = factory.createXMLEventReader(xml);
+        Map<Integer, List<Mapping>> result = new HashMap<>();
+        while (stream.hasNext()) {
+            XMLEvent next = stream.nextEvent();
+            if (next.isStartElement() && next.asStartElement().getName().getLocalPart().equalsIgnoreCase("IdUrlSet")) {
+                // FF to the Id node
+                while (!(next.isStartElement() && next.asStartElement().getName().getLocalPart().equalsIgnoreCase("Id")))
+                    next = stream.nextEvent();
+                Integer id = parseNumber(stream);
+                // FF to the mappings
+                List<Mapping> mappings = parseMapping(stream);
+                result.put(id, mappings);
+            }
+        }
+        return result;
+    }
+
+    public List<Mapping> parseMapping(XMLEventReader stream) throws XMLStreamException {
         List<Mapping> mappings = new LinkedList<Mapping>();
         logger.debug("Stream acquired, parsing");
-        while (stream.hasNext()) {
+        while (stream.hasNext() &&
+                !(stream.peek().isEndElement() &&
+                        stream.peek().asEndElement().getName().getLocalPart().equalsIgnoreCase("IdUrlSet"))) {
             XMLEvent next = stream.peek();
             if (next.isStartElement()
                     && next.asStartElement().getName()

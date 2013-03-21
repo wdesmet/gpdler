@@ -10,6 +10,7 @@ import net.straininfo2.grs.idloader.TokenBucket;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.stream.XMLStreamException;
@@ -32,6 +33,12 @@ public class EutilsDownloader {
      * requests was tested as well and Should Work(TM).
      */
     public final static int NUM_PER_REQUEST = 20000;
+
+    /**
+     * Number of mappings to attempt to download per request. Somewhat restricted
+     * by url size.
+     */
+    public final static int MAPPINGS_PER_REQUEST = 50;
 
     private static final int MAX_ERRORS = 3;  /* maximum nr of errors per item hit */
 
@@ -78,27 +85,29 @@ public class EutilsDownloader {
     }
 
     /**
-     * Downloads a LinkOut mapping using eutils. This expects the web resource
+     * Downloads a set of LinkOut mappings using eutils. This expects the web resource
      * parameter to be configured to use the eutils llinks command with appropiate
-     * parameters for the requested database.
+     * parameters for the requested database. Note that supplying too many identifiers
+     * might result in error.
      *
      * @param source web resource pointing to an appropiate eutils URL
-     * @param i identifier of the requested elemented ("id=" in the eutils url)
+     * @param ids a list of object identifiers
      * @return InputStream for the returned XML from eutils
      */
-    InputStream downloadMapping(WebResource source, Integer i) {
-        logger.info("Downloading mapping for id {}.", i);
+    InputStream downloadMapping(WebResource source, List<Integer> ids) {
         InputStream xml = null;
+        String input = StringUtils.collectionToCommaDelimitedString(ids);
+        logger.info("Downloading mapping for {} ids: {}.", ids.size(), input);
         for (int errors = 0; errors < MAX_ERRORS; errors++) {
             try {
-                xml = source.queryParam("id", i.toString()).get(
+                xml = source.queryParam("id", input).get(
                         InputStream.class);
                 break; /* only stay in loop if an error occurs */
             } catch (ClientHandlerException e) { // problem while reading the file (like timeout)
                 logger.warn("Exception while downloading: {}", e.getCause().getMessage());
                 logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);
             } catch (UniformInterfaceException ue) { // HTTP return code >300
-                logger.warn("Could not fetch bioproject {} because of HTTP {}", i, ue.getResponse().getStatus());
+                logger.warn("Could not fetch mappings because of HTTP {}", ue.getResponse().getStatus());
                 logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);
             }
         }
@@ -120,7 +129,7 @@ public class EutilsDownloader {
         WebResource link = createEutilsLinkResource(client);
         link = link.queryParam("tool", "grs_loader").queryParam("email",
                 email);
-        return this.createMapping(ids, link);
+        return this.createMapping(ids.subList(0,60), link);
     }
 
     public Map<Integer, List<Mapping>> createMapping(List<Integer> ids,
@@ -131,7 +140,9 @@ public class EutilsDownloader {
         int count = 0;
         long starttime = System.currentTimeMillis();
         try {
-            for (Integer i : ids) {
+            for (int i = 0; i < ids.size(); i += MAPPINGS_PER_REQUEST) {
+                int toIndex = i + MAPPINGS_PER_REQUEST;
+                List<Integer> mappingIds = ids.subList(i, toIndex < ids.size() ? toIndex : ids.size());
                 try {
                     logger.debug("Waiting for barrier");
                     barrier.take();
@@ -145,14 +156,14 @@ public class EutilsDownloader {
                     throw new RuntimeException(
                             "Unexpected interruption in barrier", e);
                 }
-                InputStream xml = downloadMapping(source, i);
+                InputStream xml = downloadMapping(source, mappingIds);
                 if (xml != null) {
-                    List<Mapping> mappings = xmlParser.parseMapping(xml);
-                    result.put(i, mappings);
+                    Map<Integer, List<Mapping>> mappings = xmlParser.parseMappings(xml);
+                    result.putAll(mappings);
                 } else {
                     logger.warn(
-                            "Could not download information for project ID {}!",
-                            i);
+                            "Could not download information for project IDs {}-{}!",
+                            i, toIndex);
                 }
             }
         } finally {
