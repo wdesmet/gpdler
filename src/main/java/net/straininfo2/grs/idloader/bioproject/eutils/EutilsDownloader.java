@@ -94,8 +94,11 @@ public class EutilsDownloader {
                 xml = source.queryParam("id", i.toString()).get(
                         InputStream.class);
                 break; /* only stay in loop if an error occurs */
-            } catch (ClientHandlerException e) {
+            } catch (ClientHandlerException e) { // problem while reading the file (like timeout)
                 logger.warn("Exception while downloading: {}", e.getCause().getMessage());
+                logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);
+            } catch (UniformInterfaceException ue) { // HTTP return code >300
+                logger.warn("Could not fetch bioproject {} because of HTTP {}", i, ue.getResponse().getStatus());
                 logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);
             }
         }
