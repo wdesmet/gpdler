@@ -129,7 +129,7 @@ public class EutilsDownloader {
         WebResource link = createEutilsLinkResource(client);
         link = link.queryParam("tool", "grs_loader").queryParam("email",
                 email);
-        return this.createMapping(ids.subList(0,60), link);
+        return this.createMapping(ids, link);
     }
 
     public Map<Integer, List<Mapping>> createMapping(List<Integer> ids,
