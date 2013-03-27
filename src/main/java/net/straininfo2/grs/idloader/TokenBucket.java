@@ -87,7 +87,7 @@ public class TokenBucket {
      */
     @SuppressWarnings("SameParameterValue")
     public TokenBucket(int rate) {
-        this.store = new LinkedBlockingDeque<Token>(10 * rate);
+        this.store = new LinkedBlockingDeque<>(10 * rate);
         this.run = true;
         this.fillThread = new Thread(new Filler(System.currentTimeMillis(),
                     rate));

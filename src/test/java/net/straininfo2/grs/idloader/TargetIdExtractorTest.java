@@ -15,11 +15,11 @@ import static org.junit.Assert.assertTrue;
 public class TargetIdExtractorTest {
 
     private Map<Integer, List<Mapping>> constructGrs(String url1, String url2, Provider provider) {
-        Map<Integer, List<Mapping>> grs = new HashMap<Integer, List<Mapping>>();
-        List<Mapping> mappings = new ArrayList<Mapping>();
+        Map<Integer, List<Mapping>> grs = new HashMap<>();
+        List<Mapping> mappings = new ArrayList<>();
         mappings.add(new Mapping(url1, null, null, null, provider));
         grs.put(1, mappings);
-        mappings = new ArrayList<Mapping>();
+        mappings = new ArrayList<>();
         mappings.add(new Mapping(url2, null, null, null, provider));
         grs.put(2, mappings);
         return grs;

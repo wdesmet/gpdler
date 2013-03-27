@@ -1,12 +1,9 @@
 package net.straininfo2.grs.idloader.bioproject.eutils;
 
 import com.sun.jersey.api.client.Client;
-import net.straininfo2.grs.idloader.Loader;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Category;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
-import net.straininfo2.grs.idloader.bioproject.eutils.EutilsDownloader;
-import net.straininfo2.grs.idloader.bioproject.eutils.EutilsXmlParser;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;

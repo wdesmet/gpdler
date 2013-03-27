@@ -5,8 +5,6 @@ import net.straininfo2.grs.idloader.bioproject.xmlparsing.DocumentChunker;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DocumentChunkerTest;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainConverter;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.PackageProcessor;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -17,10 +15,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 public class LoaderTest {
 

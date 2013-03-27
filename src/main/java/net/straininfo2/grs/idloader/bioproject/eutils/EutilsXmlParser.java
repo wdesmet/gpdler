@@ -32,8 +32,8 @@ public class EutilsXmlParser {
     private ConcurrentHashMap<Provider, Provider> providerMap;
 
     public EutilsXmlParser() {
-        this.categoryMap = new ConcurrentHashMap<Category, Category>();
-        this.providerMap = new ConcurrentHashMap<Provider, Provider>();
+        this.categoryMap = new ConcurrentHashMap<>();
+        this.providerMap = new ConcurrentHashMap<>();
         this.factory = XMLInputFactory.newFactory();
     }
 
@@ -72,7 +72,7 @@ public class EutilsXmlParser {
     }
 
     public List<Mapping> parseMapping(XMLEventReader stream) throws XMLStreamException {
-        List<Mapping> mappings = new LinkedList<Mapping>();
+        List<Mapping> mappings = new LinkedList<>();
         logger.debug("Stream acquired, parsing");
         while (stream.hasNext() &&
                 !(stream.peek().isEndElement() &&

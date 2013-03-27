@@ -1,7 +1,9 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class DBXref extends Link {
@@ -24,7 +26,7 @@ public class DBXref extends Link {
     /**
      * List of identifiers as a string, separated by comma (',').
      *
-     * @return
+     * @return encoded list of identifiers defined by this cross-reference
      */
     @Column(length = 128)
     public String getDbId() {

@@ -3,7 +3,6 @@ package net.straininfo2.grs.idloader.bioproject.xmlparsing;
 import net.straininfo2.grs.idloader.bioproject.domain.AdminBioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.SubmissionBioProject;
-import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainHandler;
 
 import java.util.Collections;
 import java.util.LinkedList;

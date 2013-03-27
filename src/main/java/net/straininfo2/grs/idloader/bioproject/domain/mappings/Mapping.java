@@ -17,7 +17,6 @@ import java.util.Set;
  * name.
  *
  * @see Provider
- * @see net.straininfo2.grs.idloader.db.ProjectInfoLoader
  */
 @Entity
 public class Mapping implements Serializable {
@@ -138,7 +137,7 @@ public class Mapping implements Serializable {
      * of the mappings
      */
     public static Set<Provider> listProviders(List<Mapping> mappings) {
-        Set<Provider> providers = new HashSet<Provider>();
+        Set<Provider> providers = new HashSet<>();
         for (Mapping mapping : mappings) {
             if (!providers.contains(mapping.getProvider())) {
                 providers.add(mapping.getProvider());

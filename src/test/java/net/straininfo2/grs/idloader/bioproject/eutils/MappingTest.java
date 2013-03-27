@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MappingTest {
@@ -71,7 +72,7 @@ public class MappingTest {
     @Test
     public void testEqualsWithNulls() {
         Mapping m = new Mapping("http://genomesonline.org/cgi-bin/GOLD/bin/GOLDCards.cgi?goldstamp=Gc00174", "organism-specific", "GOLDCARD: Gc00174", null, null);
-        m.equals(mappings.get(4).get(5));
+        assertFalse(m.equals(mappings.get(4).get(5)));
     }
 
     @Test
@@ -95,8 +96,8 @@ public class MappingTest {
 
     @Test
     public void testMappingsComparison() {
-        List<Mapping> secondList = new ArrayList<Mapping>(mappings.get(4).size());
-        List<Mapping> revCollection = new ArrayList<Mapping>(mappings.get(4));
+        List<Mapping> secondList = new ArrayList<>(mappings.get(4).size());
+        List<Mapping> revCollection = new ArrayList<>(mappings.get(4));
         Collections.reverse(revCollection);
         for (Mapping m : revCollection) {
             secondList.add(m);

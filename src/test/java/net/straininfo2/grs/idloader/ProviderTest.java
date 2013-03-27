@@ -24,7 +24,7 @@ public class ProviderTest {
 
     @Test
     public void testEquals() {
-        ConcurrentHashMap<Provider, Provider> map = new ConcurrentHashMap<Provider, Provider>();
+        ConcurrentHashMap<Provider, Provider> map = new ConcurrentHashMap<>();
         map.put(provider, provider);
         Provider next = new Provider(provider.getName(), provider.getAbbr(), provider.getId(), provider.getUrl());
         assertTrue("hash map added the provider, even though it shouldn't!",

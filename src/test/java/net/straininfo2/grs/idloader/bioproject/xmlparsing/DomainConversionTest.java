@@ -8,9 +8,9 @@ import net.straininfo2.grs.idloader.bioproject.domain.Publication;
 import org.junit.Before;
 import org.junit.Test;
 
+import static net.straininfo2.grs.idloader.bioproject.domain.Archive.NCBI;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static net.straininfo2.grs.idloader.bioproject.domain.Archive.NCBI;
 
 /**
  * Tests for various aspects of the conversion to domain objects.

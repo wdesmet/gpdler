@@ -18,7 +18,7 @@ public class CategoryTest {
 
     @Before
     public void setup() {
-        this.categories = new ConcurrentHashMap<Category, Category>();
+        this.categories = new ConcurrentHashMap<>();
         this.original = new Category(DEFAULT);
         categories.put(original, original);
     }
