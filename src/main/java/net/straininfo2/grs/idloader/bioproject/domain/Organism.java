@@ -29,7 +29,7 @@ public class Organism {
     
     private String reproduction;
 
-    private long genomeSize;
+    private Long genomeSize;
 
     private String genomeSizeUnits;
 
@@ -145,11 +145,11 @@ public class Organism {
         this.reproduction = reproduction;
     }
 
-    public long getGenomeSize() {
+    public Long getGenomeSize() {
         return genomeSize;
     }
 
-    public void setGenomeSize(long genomeSize) {
+    public void setGenomeSize(Long genomeSize) {
         this.genomeSize = genomeSize;
     }
 
