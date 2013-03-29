@@ -78,7 +78,7 @@
         id bigint not null,
         breed varchar(255),
         cultivar varchar(255),
-        genomeSize bigint not null,
+        genomeSize bigint,
         genomeSizeUnits varchar(255),
         isolateName varchar(255),
         label varchar(255),

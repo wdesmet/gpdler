@@ -72,7 +72,7 @@ public class DocumentChunkerTest {
             return done;
         }
     }
-    
+
     @Test
     public void testEndOfParsing() throws ParserConfigurationException, IOException, SAXException, JAXBException {
         ProcessEnd processor = new ProcessEnd();
