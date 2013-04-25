@@ -3,12 +3,15 @@ package net.straininfo2.grs.idloader.db;
 import net.straininfo2.grs.idloader.bioproject.domain.AdminBioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.SubmissionBioProject;
+import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.xmlparsing.DomainHandler;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashSet;
 
 public class BioProjectLoader implements DomainHandler {
 
@@ -90,13 +93,14 @@ public class BioProjectLoader implements DomainHandler {
         checkTransaction();
         logger.info("Saving project with ID {}", project.getProjectId());
         BioProject current = loadCurrent(project.getProjectId());
-        copyMappings(current, project);
         if (current != null && !(current instanceof AdminBioProject)) {
             // sometimes projects change type, replace the entry
+            project.cloneMappings(current.getMappings());
             currentSession.delete(current);
             currentSession.persist(project);
         }
         else{
+            copyMappings(current, project);
             currentSession.merge(project);
         }
     }
@@ -106,12 +110,13 @@ public class BioProjectLoader implements DomainHandler {
         checkTransaction();
         logger.info("Saving project with ID {}", project.getProjectId());
         BioProject current = loadCurrent(project.getProjectId());
-        copyMappings(current, project);
         if (current != null && !(current instanceof SubmissionBioProject)) {
+            project.cloneMappings(current.getMappings());
             currentSession.delete(current);
             currentSession.persist(project);
         }
         else{
+            copyMappings(current, project);
             currentSession.merge(project);
         }
     }

@@ -243,4 +243,18 @@ public class BioProject {
         this.mappings = mappings;
     }
 
+    /**
+     * Clone the mappings from a different object.
+     *
+     * @param mappings set of mappings
+     */
+    public void cloneMappings(Set<Mapping> mappings) {
+        this.setMappings(new HashSet<Mapping>());
+        for (Mapping mapping : mappings) {
+            Mapping clone = new Mapping(mapping);
+            clone.setBioProject(this);
+            this.getMappings().add(clone);
+        }
+    }
+
 }

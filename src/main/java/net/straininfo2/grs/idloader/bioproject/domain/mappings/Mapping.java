@@ -55,6 +55,16 @@ public class Mapping implements Serializable {
 
     }
 
+    /**
+     * Copy constructor, does not copy identifiers or BioProject parent.
+     *
+     * @param otherMapping Mapping to copy elements from.
+     */
+    public Mapping(Mapping otherMapping) {
+        this(otherMapping.getUrl(), otherMapping.getSubjectType(), otherMapping.getLinkName(), otherMapping.getCategory(), otherMapping.getProvider());
+        this.setTargetId(otherMapping.getTargetId());
+    }
+
     @Id
     @GeneratedValue
     public long getId() {

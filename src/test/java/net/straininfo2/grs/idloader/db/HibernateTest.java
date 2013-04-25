@@ -4,6 +4,7 @@ import net.straininfo2.grs.idloader.IntegrationTest;
 import net.straininfo2.grs.idloader.TargetIdExtractor;
 import net.straininfo2.grs.idloader.bioproject.domain.BioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.Organism;
+import net.straininfo2.grs.idloader.bioproject.domain.SubmissionBioProject;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Mapping;
 import net.straininfo2.grs.idloader.bioproject.domain.mappings.Provider;
 import net.straininfo2.grs.idloader.bioproject.eutils.MappingHandler;
@@ -27,7 +28,9 @@ import javax.annotation.Resource;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -101,6 +104,29 @@ public class HibernateTest {
         assertEquals("Another organism", pr3.retrieveOrganism().getLabel());
         assertEquals(1, (long) session.createQuery("select count(*) from Organism").uniqueResult());
         session.close();
+    }
+
+    @Test
+    public void testNewType() {
+        BioProjectLoader loader = new BioProjectLoader();
+        loader.setSessionFactory(factory);
+        BioProject old = new BioProject();
+        old.setProjectId(1L);
+        Mapping m = new Mapping(
+                "http://example.com",
+                "",
+                "",
+                new net.straininfo2.grs.idloader.bioproject.domain.mappings.Category("a"),
+                new Provider("example", "", 1L, ""));
+        m.setBioProject(old);
+        HashSet<Mapping> mappings = new HashSet<>();
+        mappings.add(m);
+        old.setMappings(mappings);
+        loader.processBioProject(old);
+        SubmissionBioProject uptodate = new SubmissionBioProject();
+        uptodate.setProjectId(1L);
+        loader.processSubmissionBioProject(uptodate); // will crash if the mapping is wrong
+        loader.endParsing();
     }
 
     @Test
