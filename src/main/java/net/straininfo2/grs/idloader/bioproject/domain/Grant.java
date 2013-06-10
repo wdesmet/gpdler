@@ -34,7 +34,16 @@ public class Grant {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        /*
+        Annoyingly, titles are sometimes used for descriptions. We're truncating them here, in principle the
+        schema could handle it differently (maybe a clob column instead of varchar, I guess)
+        */
+        if (title.length() > 512) {
+            this.title = title.substring(0, 512);
+        }
+        else {
+            this.title = title;
+        }
     }
 
     @Column(length = 256)
