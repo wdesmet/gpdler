@@ -1,5 +1,7 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.*;
 
 @Entity
@@ -38,7 +40,8 @@ public class Grant {
         Annoyingly, titles are sometimes used for descriptions. We're truncating them here, in principle the
         schema could handle it differently (maybe a clob column instead of varchar, I guess)
         */
-        if (title.length() > 512) {
+        if (title != null && title.length() > 512) {
+            LoggerFactory.getLogger(this.getClass()).warn("Grant title exceeds length: {}, bioproject {}", title, bioProject);
             this.title = title.substring(0, 512);
         }
         else {
