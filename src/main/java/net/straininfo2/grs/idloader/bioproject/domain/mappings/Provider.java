@@ -64,18 +64,6 @@ public class Provider implements Serializable {
         this.url = url;
     }
 
-    // if you remove a provider, also remove mappings associated with it
-    // what you can do is remove all mappings associated with a provider,
-    // that provider will continue to exist.
-    @OneToMany(mappedBy = "provider", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<Mapping> getMappings() {
-        return mappings;
-    }
-
-    public void setMappings(Set<Mapping> mappings) {
-        this.mappings = mappings;
-    }
-
     @Override
 	public String toString() {
 		return "Provider: " + getName() + "(" + getAbbr() + ")" + " - id " + getId();
