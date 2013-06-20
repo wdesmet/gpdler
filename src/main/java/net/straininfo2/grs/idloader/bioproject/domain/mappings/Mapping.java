@@ -90,7 +90,7 @@ public class Mapping implements Serializable {
         return linkName;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     public Category getCategory() {
         return category;
     }
