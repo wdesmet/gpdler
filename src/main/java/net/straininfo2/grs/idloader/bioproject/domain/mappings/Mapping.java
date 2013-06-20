@@ -95,7 +95,7 @@ public class Mapping implements Serializable {
         return category;
     }
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     public Provider getProvider() {
         return provider;
     }
