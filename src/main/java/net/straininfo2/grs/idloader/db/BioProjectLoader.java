@@ -80,7 +80,7 @@ public class BioProjectLoader implements DomainHandler {
     private void cloneAndDelete(BioProject from, BioProject to) {
         to.cloneMappings(from.getMappings());
         for (Mapping mapping : from.getMappings()) {
-            if (mapping.getProvider() != null) {
+            if (mapping.getProvider() != null && mapping.getProvider().getMappings() != null) {
                 mapping.getProvider().getMappings().remove(mapping);
             }
         }
