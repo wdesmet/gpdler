@@ -79,6 +79,15 @@ public class BioProjectLoader implements DomainHandler {
         }
     }
 
+    private void cloneAndDelete(BioProject from, BioProject to) {
+        to.cloneMappings(from.getMappings());
+        for (Mapping mapping : from.getMappings()) {
+            mapping.getProvider().getMappings().remove(mapping);
+        }
+        currentSession.delete(from);
+        currentSession.persist(to);
+    }
+
     @Override
     public void processBioProject(BioProject project) {
         checkTransaction();
@@ -95,9 +104,7 @@ public class BioProjectLoader implements DomainHandler {
         BioProject current = loadCurrent(project.getProjectId());
         if (current != null && !(current instanceof AdminBioProject)) {
             // sometimes projects change type, replace the entry
-            project.cloneMappings(current.getMappings());
-            currentSession.delete(current);
-            currentSession.persist(project);
+            cloneAndDelete(current, project);
         }
         else{
             copyMappings(current, project);
@@ -111,9 +118,7 @@ public class BioProjectLoader implements DomainHandler {
         logger.info("Saving project with ID {}", project.getProjectId());
         BioProject current = loadCurrent(project.getProjectId());
         if (current != null && !(current instanceof SubmissionBioProject)) {
-            project.cloneMappings(current.getMappings());
-            currentSession.delete(current);
-            currentSession.persist(project);
+            cloneAndDelete(current, project);
         }
         else{
             copyMappings(current, project);
