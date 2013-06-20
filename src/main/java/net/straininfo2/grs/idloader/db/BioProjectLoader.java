@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
-
 public class BioProjectLoader implements DomainHandler {
 
     /*
@@ -82,7 +80,9 @@ public class BioProjectLoader implements DomainHandler {
     private void cloneAndDelete(BioProject from, BioProject to) {
         to.cloneMappings(from.getMappings());
         for (Mapping mapping : from.getMappings()) {
-            mapping.getProvider().getMappings().remove(mapping);
+            if (mapping.getProvider() != null) {
+                mapping.getProvider().getMappings().remove(mapping);
+            }
         }
         currentSession.delete(from);
         currentSession.persist(to);
