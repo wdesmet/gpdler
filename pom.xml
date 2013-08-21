@@ -4,7 +4,7 @@
 
     <groupId>net.straininfo2.grs</groupId>
     <artifactId>gpdler</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Genome Project Information Downloader</name>
@@ -220,4 +220,5 @@
             <layout>default</layout>
         </pluginRepository>
     </pluginRepositories>
+
 </project>
