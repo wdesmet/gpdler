@@ -139,7 +139,7 @@
 
     create table if not exists ProjectRelevance (
         id bigint not null,
-        relevanceDescription varchar(255),
+        relevanceDescription clob,
         relevantField integer,
         bioProject_projectId bigint not null,
         primary key (id)

@@ -22,7 +22,8 @@ public class ProjectRelevance {
 
     private RelevantField relevantField;
 
-    @Column(length = 255)
+    @Lob
+    @Basic
     private String relevanceDescription;
 
     private BioProject bioProject;
