@@ -124,7 +124,7 @@
     create table if not exists OrganismPhenotype (
         id bigint not null,
         bioticRelationship integer,
-        disease varchar(255),
+        disease varchar(512),
         trophicLevel integer,
         primary key (id)
     );

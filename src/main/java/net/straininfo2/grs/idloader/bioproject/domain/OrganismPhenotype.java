@@ -1,5 +1,6 @@
 package net.straininfo2.grs.idloader.bioproject.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -58,6 +59,7 @@ public class OrganismPhenotype {
         this.trophicLevel = trophicLevel;
     }
 
+    @Column(length = 512)
     public String getDisease() {
         return disease;
     }
