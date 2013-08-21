@@ -22,8 +22,6 @@ public class ProjectRelevance {
 
     private RelevantField relevantField;
 
-    @Lob
-    @Basic
     private String relevanceDescription;
 
     private BioProject bioProject;
@@ -55,6 +53,8 @@ public class ProjectRelevance {
         this.relevantField = relevantField;
     }
 
+    @Lob
+    @Basic
     public String getRelevanceDescription() {
         return relevanceDescription;
     }
