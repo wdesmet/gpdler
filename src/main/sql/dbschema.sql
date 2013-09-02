@@ -17,7 +17,7 @@
         archive integer,
         description clob,
         name varchar(255),
-        title varchar(1024),
+        title varchar(2048),
         descriptionOther varchar(255),
         subType integer,
         primary key (projectId)

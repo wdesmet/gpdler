@@ -91,7 +91,7 @@ public class BioProject {
         this.name = name;
     }
 
-    @Column(length = 1024)
+    @Column(length = 2048)
     public String getTitle() {
         return title;
     }
