@@ -73,6 +73,9 @@ public class Grant {
     }
 
     public void setGrantId(String grantId) {
+        if (grantId.length() > 64) {
+            grantId = grantId.substring(0, 64);
+        }
         this.grantId = grantId;
     }
 
