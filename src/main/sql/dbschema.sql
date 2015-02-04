@@ -47,7 +47,7 @@
         id bigint not null,
         category varchar(255),
         label varchar(512),
-        db varchar(32),
+        db varchar(64),
         dbId varchar(128),
         bioProject_projectId bigint not null,
         primary key (id)
