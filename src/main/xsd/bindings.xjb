@@ -19,5 +19,10 @@
         <bindings node="//xs:element[@name='TargetBioSampleSet']/xs:complexType">
             <factoryMethod name="TypeTargetBioSampleSet"/>
         </bindings>
+        <bindings node="//xs:simpleType[@name='typeDateOrTime']">
+            <javaType name="java.util.Calendar"
+                parseMethod="javax.xml.bind.DatatypeConverter.parseDateTime"
+                printMethod="javax.xml.bind.DatatypeConverter.printDateTime" />
+        </bindings>
     </bindings>
 </bindings>
