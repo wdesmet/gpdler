@@ -36,7 +36,7 @@
     create table if not exists ProjectGrant (
         id bigint not null,
         agencyAbbr varchar(64),
-        agencyName varchar(256),
+        agencyName varchar(512),
         grantId varchar(64),
         title varchar(512),
         bioProject_projectId bigint not null,
@@ -47,7 +47,7 @@
         id bigint not null,
         category varchar(255),
         label varchar(512),
-        db varchar(32),
+        db varchar(64),
         dbId varchar(128),
         bioProject_projectId bigint not null,
         primary key (id)

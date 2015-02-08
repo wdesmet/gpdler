@@ -112,7 +112,7 @@
                             </xs:element>
                             <xs:element type="typePublication" name="Publication" minOccurs="0"
                                 maxOccurs="unbounded"> </xs:element>
-                            <xs:element name="ProjectReleaseDate" type="xs:dateTime" minOccurs="0">
+                            <xs:element name="ProjectReleaseDate" type="typeDateOrTime" minOccurs="0">
                                 <xs:annotation>
                                     <xs:documentation>Date of public release.</xs:documentation>
                                 </xs:annotation>
@@ -326,7 +326,6 @@
                                                            </xs:documentation>
                                                   </xs:annotation>
                                                   </xs:element>
-
                                                   <xs:element maxOccurs="1" name="Description"
                                                   type="xs:string" minOccurs="0">
                                                   <xs:annotation>
@@ -337,7 +336,17 @@
                                                   </xs:element>
                                                     <xs:element name="BioSampleSet" minOccurs="0" maxOccurs="1"><xs:annotation><xs:documentation>Identifier of the BioSample when known</xs:documentation>
                                                     </xs:annotation>
-                                                        <xs:complexType><xs:sequence><xs:element name="ID" maxOccurs="unbounded" type="xs:token"></xs:element>
+                                                        <xs:complexType><xs:sequence><xs:element name="ID" maxOccurs="unbounded">
+                                                            <xs:complexType>
+                                                                
+                                                                
+                                                                <xs:simpleContent><xs:extension base="xs:string"><xs:attribute name="local_id" type="xs:string"></xs:attribute>
+                                                                    <xs:attribute name="user_id" type="xs:string"></xs:attribute>
+                                                                    <xs:attribute name="db" type="xs:string"></xs:attribute>
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                            </xs:complexType>
+                                                        </xs:element>
                                                     </xs:sequence>
                                                     </xs:complexType>
                                                     </xs:element>
@@ -375,7 +384,8 @@
                                                   <xs:documentation>Synthetic material</xs:documentation>
                                                   </xs:annotation>
                                                   </xs:enumeration>
-                                                  <xs:enumeration value="eOther">
+                                                      <xs:enumeration value="eSingleCell"></xs:enumeration>
+                                                      <xs:enumeration value="eOther">
                                                   <xs:annotation>
                                                   <xs:documentation>Please,  fill Description element when choose "eOther"</xs:documentation>
                                                   </xs:annotation>
@@ -599,12 +609,49 @@
 
 
                                         </xs:element>
-
-
-
-
+                                        <xs:element name="IntendedDataTypeSet" minOccurs="0">
+                                            <xs:annotation>
+                                                <xs:documentation>
+                                                    Types of data intended to be submitted for the project.    
+                                                </xs:documentation>
+                                            </xs:annotation>
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element maxOccurs="unbounded" minOccurs="1" name="DataType">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:token">
+                                                                <xs:enumeration value="genome sequencing"> </xs:enumeration>
+                                                                <xs:enumeration value="raw sequence reads"> </xs:enumeration>
+                                                                <xs:enumeration value="genome sequencing and assembly"> </xs:enumeration>
+                                                                <xs:enumeration value="metagenome"> </xs:enumeration>
+                                                                <xs:enumeration value="metagenomic assembly"> </xs:enumeration>
+                                                                <xs:enumeration value="assembly"> </xs:enumeration>
+                                                                <xs:enumeration value="transcriptome"> </xs:enumeration>
+                                                                <xs:enumeration value="proteomic"> </xs:enumeration>
+                                                                <xs:enumeration value="map"> </xs:enumeration>
+                                                                <xs:enumeration value="clone ends"> </xs:enumeration>
+                                                                <xs:enumeration value="targeted loci"> </xs:enumeration>
+                                                                <xs:enumeration value="targeted loci cultured"> </xs:enumeration>
+                                                                <xs:enumeration value="targeted loci environmental"> </xs:enumeration>
+                                                                <xs:enumeration value="random survey"> </xs:enumeration>
+                                                                <xs:enumeration value="exome"> </xs:enumeration>
+                                                                <xs:enumeration value="variation"> </xs:enumeration>
+                                                                <xs:enumeration value="epigenomics"> </xs:enumeration>
+                                                                <xs:enumeration value="phenotype or genotype"> </xs:enumeration>
+                                                                <xs:enumeration value="other"> </xs:enumeration>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="ProjectDataTypeSet" minOccurs="0"><xs:annotation><xs:documentation>Data type based on actual data information. Ignored at submission time.</xs:documentation>
+                                        </xs:annotation>
+                                            <xs:complexType><xs:sequence><xs:element name="DataType" maxOccurs="unbounded" type="xs:token"></xs:element>
+                                        </xs:sequence>
+                                        </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
-
                                 </xs:complexType>
                             </xs:element>
                         </xs:choice>
@@ -686,7 +733,7 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="date" type="xs:dateTime">
+        <xs:attribute name="date" type="typeDateOrTime">
             <xs:annotation>
                 <xs:documentation>Publication date.</xs:documentation>
             </xs:annotation>
@@ -760,6 +807,7 @@
                         <xs:enumeration value="eArchaea"> </xs:enumeration>
                         <xs:enumeration value="eBacteria"> </xs:enumeration>
                         <xs:enumeration value="eViruses"> </xs:enumeration>
+                        <xs:enumeration value="eViroids"></xs:enumeration>
                         <xs:enumeration value="eOther"> </xs:enumeration>
                     </xs:restriction>
                 </xs:simpleType>
@@ -1145,7 +1193,8 @@
                 For example, there may be a localID from the Center and a different localID from the submitting DAC.</xs:documentation>
         </xs:annotation>
         <xs:simpleContent>
-            <xs:extension base="xs:string"> </xs:extension>
+            <xs:extension base="xs:string"> <xs:attribute type="xs:string" name="submission_id"></xs:attribute>
+            </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
     <xs:simpleType name="typeRepliconMolType">
@@ -1220,15 +1269,24 @@
         </xs:attribute>
     </xs:complexType>
     <xs:simpleType name="typeLocusTagPrefixText"><xs:restriction base="xs:string">
-        <xs:minLength value="3"/>
+        <xs:minLength value="1">
+            <xs:annotation><xs:documentation>Old historical prefixes may be one- or two-character long. Verification to be provided at API level</xs:documentation></xs:annotation>
+        </xs:minLength>
         <xs:maxLength value="12"/>
     </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="typeLocusTagPrefix">
         <xs:simpleContent>
             <xs:extension base="typeLocusTagPrefixText"><xs:attribute name="biosample_id" type="xs:token"></xs:attribute>
+                <xs:attribute name="assembly_id" type="xs:token"></xs:attribute>
             </xs:extension>
         </xs:simpleContent>
-        
     </xs:complexType>
+    <xs:simpleType name="typeDateOrTime">
+        <xs:union><xs:simpleType><xs:restriction base="xs:date"></xs:restriction>
+        </xs:simpleType>
+            <xs:simpleType><xs:restriction base="xs:dateTime"></xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
 </xs:schema>

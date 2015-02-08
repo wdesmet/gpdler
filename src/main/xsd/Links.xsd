@@ -101,6 +101,8 @@
                                                 <xs:enumeration value="eSameSample">
                                                 </xs:enumeration>
                                                 <xs:enumeration value="eTopAdminTopSingleOrganism"></xs:enumeration>
+                                                <xs:enumeration value="ePrimaryData"><xs:annotation><xs:documentation>Link TO a project that has original data for TPA (third party assembly)</xs:documentation></xs:annotation>
+                                                </xs:enumeration>
                                             </xs:restriction>
                                         </xs:simpleType>
                                     </xs:element>

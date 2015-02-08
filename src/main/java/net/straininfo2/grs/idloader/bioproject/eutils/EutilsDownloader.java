@@ -106,6 +106,9 @@ public class EutilsDownloader {
             } catch (ClientHandlerException e) { // problem while reading the file (like timeout)
                 logger.warn("Exception while downloading: {}", e.getCause().getMessage());
                 logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);
+                try {
+                    Thread.sleep(20); // short backoff before trying again
+                } catch (InterruptedException ie) {}
             } catch (UniformInterfaceException ue) { // HTTP return code >300
                 logger.warn("Could not fetch mappings because of HTTP {}", ue.getResponse().getStatus());
                 logger.debug("Error count: {}/{}", errors + 1, MAX_ERRORS);

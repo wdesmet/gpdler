@@ -49,7 +49,7 @@ public class Grant {
         }
     }
 
-    @Column(length = 256)
+    @Column(length = 512)
     public String getAgencyName() {
         return agencyName;
     }

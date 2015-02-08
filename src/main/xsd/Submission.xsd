@@ -63,7 +63,7 @@
         change status (ChangeStatus) of the existing one. 
       </xs:documentation></xs:annotation>
       <xs:complexType>
-        <xs:choice>
+        <xs:choice minOccurs="0">
           <xs:element name="ProcessFile">
             <xs:annotation><xs:documentation>
               All action and commands to target archive are contained in this file
@@ -144,6 +144,7 @@
             </xs:complexType>
           </xs:element>
         </xs:choice>
+        <xs:attribute name="action_id" type="xs:token"></xs:attribute>
       </xs:complexType>
     </xs:element>
   </xs:sequence>
@@ -155,6 +156,7 @@
       NCBI identifier of the related submission. For corrections of previously submitted (invalid) data and for backward compatibility with existing SRA submission XML.
     </xs:documentation></xs:annotation>
   </xs:attribute>
+    <xs:attribute name="submission_id" type="xs:token"></xs:attribute>
   </xs:complexType> 
   
   <!-- Types for submission XML -->

@@ -14,7 +14,7 @@ public class DBXref extends Link {
 
     private BioProject bioProject;
 
-    @Column(length = 32)
+    @Column(length = 64)
     public String getDb() {
         return db;
     }
