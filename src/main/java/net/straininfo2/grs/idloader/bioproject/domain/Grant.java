@@ -64,7 +64,14 @@ public class Grant {
     }
 
     public void setAgencyAbbr(String agencyAbbr) {
-        this.agencyAbbr = agencyAbbr.substring(0, 64); // should not exceed the field width
+        if (agencyAbbr != null && agencyAbbr.length() > 64)
+        {
+            this.agencyAbbr = agencyAbbr.substring(0, 64);
+        }
+        else
+        {
+            this.agencyAbbr = agencyAbbr;
+        }
     }
 
     @Column(length = 64)
